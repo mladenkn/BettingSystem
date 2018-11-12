@@ -9,6 +9,7 @@ namespace BettingSystem.Models
         public User User { get; set; }
         public IReadOnlyCollection<BettedPair> BettedPairs { get; set; }
         public double Stake { get; set; }
+        public IReadOnlyCollection<TicketBonus> Bonuses { get; set; }
     }
 
     public class BettedPair

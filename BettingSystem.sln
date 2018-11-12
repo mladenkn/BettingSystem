@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSystem.RestApi", "BettingSystem.RestApi\BettingSystem.RestApi.csproj", "{159DBBD7-45FB-4047-909C-889DDAF17DE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingSystem.RestApi", "BettingSystem.RestApi\BettingSystem.RestApi.csproj", "{159DBBD7-45FB-4047-909C-889DDAF17DE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C2B119A-2A04-4F92-B1C0-68394F21F4BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSystem.Tests", "BettingSystem.Tests\BettingSystem.Tests.csproj", "{B813C25C-E19C-4043-AB2F-9559C08EF153}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingSystem.Tests", "BettingSystem.Tests\BettingSystem.Tests.csproj", "{B813C25C-E19C-4043-AB2F-9559C08EF153}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSystem", "BettingSystem\BettingSystem.csproj", "{4277D95B-370F-4F29-B55C-BF25719F75C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BettingSystem", "BettingSystem\BettingSystem.csproj", "{4277D95B-370F-4F29-B55C-BF25719F75C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

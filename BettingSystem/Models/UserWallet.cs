@@ -12,17 +12,10 @@
     public class WalletTransaction
     {
         public int WalletId { get; set; }
-        public double MoneyAmmount { get; set; }
+        public double MoneyInvolved { get; set; }
         public WalletTransactionType Type { get; set; }
-        public WalletTransactionReason Reason { get; set; }
 
         public enum WalletTransactionType
-        {
-            // in wallet, or out of wallet
-            In, Out
-        }
-
-        public enum WalletTransactionReason
         {
             TicketCommit
         }

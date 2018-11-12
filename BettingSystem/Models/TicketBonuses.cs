@@ -2,6 +2,7 @@
 {
     public abstract class TicketBonus
     {
+        public int Id { get; set; }
     }
 
     public class VariousSportsBonus : TicketBonus

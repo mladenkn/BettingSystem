@@ -41,12 +41,11 @@
   <Class Name="BettingSystem.Models.UserWallet">
     <Position X="12" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAADAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAADAAAAAAAAAAAAAAAAAAgACAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>Models\UserWallet.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="User" />
-      <Property Name="MoneyAvailable" />
     </ShowAsAssociation>
   </Class>
   <Class Name="BettingSystem.Models.Money">
@@ -86,8 +85,8 @@
       <FileName>Models\Ticket.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="BettedType" />
       <Property Name="BettingPair" />
+      <Property Name="BettedType" />
     </ShowAsAssociation>
   </Class>
   <Enum Name="BettingSystem.Models.BettingType" Collapsed="true">

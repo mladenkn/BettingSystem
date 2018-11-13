@@ -34,6 +34,7 @@ namespace BetingSystem.Tests.Tickets
             
             var request = new CommitTicketRequest
             {
+                Stake = 19,
                 BetingPairs = new[]
                 {
                     new CommitTicketRequest.BetingPair
@@ -54,10 +55,12 @@ namespace BetingSystem.Tests.Tickets
                 }
             };
 
+            var userId = "a";
+
             db.SaveChanges();
 
             var service = new TicketService(new UnitOfWork(db));
-            await service.Handle(request, "");
+            await service.Handle(request, userId);
 
             var commitedTicket = db.Tickets.First();
             commitedTicket.Should().NotBeNull();
@@ -88,6 +91,8 @@ namespace BetingSystem.Tests.Tickets
             });
 
             commitedTicket.Quota.Should().Be(pair1SelectedQuota * pair2SelectedQuota * pair3SelectedQuota);
+            commitedTicket.UserId.Should().Be(userId);
+            commitedTicket.Stake.Should().Be(request.Stake);
         }
     }
 }

@@ -55,10 +55,10 @@ namespace BetingSystem.Services
 
         public static void CalculateQuota(Ticket ticket)
         {
-            ticket.Quota = ticket.BetedPairs.Select(p => p.BetablePair.QuotaForType(p.BetedType)).Product();
+            ticket.Quota = ticket.BetedPairs.Select(p => p.Quota()).Product();
         }
 
-        private IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)
+        private static IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)
         {
             BetingType GetSelectedTypeOfPair(int pairId) =>
                 request.BetedPairs.First(p => p.BetedPairId == pairId).BetedType;

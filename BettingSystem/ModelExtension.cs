@@ -15,5 +15,7 @@ namespace BetingSystem
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
+
+        public static double Quota(this BetedPair pair) => pair.BetablePair.QuotaForType(pair.BetedType);
     }
 }

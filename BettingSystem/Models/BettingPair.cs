@@ -1,6 +1,6 @@
 ﻿namespace BetingSystem.Models
 {
-    public class BettingPair
+    public class BetingPair
     {
         public int Id { get; set; }
 

@@ -9,22 +9,22 @@ namespace BetingSystem.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public IReadOnlyCollection<BettedPair> BettedPairs { get; set; }
+        public IReadOnlyCollection<BetedPair> BetedPairs { get; set; }
 
         public double Stake { get; set; }
 
         public IReadOnlyCollection<TicketBonus> Bonuses { get; set; }
     }
 
-    public class BettedPair
+    public class BetedPair
     {
         public int Id { get; set; }
 
-        public int BettingPairId { get; set; }
-        public BettingPair BettingPair { get; set; }
+        public int BetingPairId { get; set; }
+        public BetingPair BetingPair { get; set; }
 
-        public BettingType BettedType { get; set; }
+        public BetingType BetedType { get; set; }
     }
 
-    public enum BettingType { Team1Win, Team2Win, Draw }
+    public enum BetingType { Team1Win, Team2Win, Draw }
 }

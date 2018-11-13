@@ -6,12 +6,12 @@ namespace BetingSystem.Requests
     public class CommitTicketRequest
     {
         public double Stake { get; set; }
-        public IReadOnlyCollection<BettedPair> BettedPairs { get; set; }
+        public IReadOnlyCollection<BetedPair> BetedPairs { get; set; }
 
-        public class BettedPair
+        public class BetedPair
         {
-            public int BettedPairId { get; set; }
-            public BettingType BettedType { get; set; }
+            public int BetedPairId { get; set; }
+            public BetingType BetedType { get; set; }
         }
     }
 }

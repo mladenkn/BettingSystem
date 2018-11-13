@@ -20,13 +20,13 @@ namespace BetingSystem.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _tickets;
-        private readonly IBettingPairsRepository _bettingPairs;
+        private readonly IBettingPairsRepository _betingPairs;
         private readonly IDatabase _db;
 
-        public TicketService(ITicketRepository tickets, IBettingPairsRepository bettingPairs, IDatabase db)
+        public TicketService(ITicketRepository tickets, IBettingPairsRepository betingPairs, IDatabase db)
         {
             _tickets = tickets;
-            _bettingPairs = bettingPairs;
+            _betingPairs = betingPairs;
             _db = db;
         }
 
@@ -34,7 +34,7 @@ namespace BetingSystem.Services
         {
             var pairsToBetIds = request.BetedPairs.Select(p => p.BetedPairId);
 
-            var betablePairs = await _bettingPairs.GenericQuery()
+            var betablePairs = await _betingPairs.GenericQuery()
                 .Where(p => pairsToBetIds.Contains(p.Id))
                 .ToListAsync();
 

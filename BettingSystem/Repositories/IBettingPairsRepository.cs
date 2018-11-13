@@ -8,7 +8,7 @@ using BetingSystem.Models;
 
 namespace BetingSystem.Repositories
 {
-    public interface IBettingPairsRepository : IRepository<BetingPair>
+    public interface IBettingPairsRepository : IRepository<BetablePair>
     {
         
     }

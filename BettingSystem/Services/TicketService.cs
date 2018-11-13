@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApplicationKernel;
 using BetingSystem.Models;
-using BetingSystem.Repositories;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
 using Utilities;
@@ -17,24 +16,15 @@ namespace BetingSystem.Services
         Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId);
     }
 
-    public class TicketService : ITicketService
+    public class TicketService : AbstractService, ITicketService
     {
-        private readonly ITicketRepository _tickets;
-        private readonly IBetingPairsRepository _betingPairs;
-        private readonly IDatabase _db;
-
-        public TicketService(ITicketRepository tickets, IBetingPairsRepository betingPairs, IDatabase db)
-        {
-            _tickets = tickets;
-            _betingPairs = betingPairs;
-            _db = db;
-        }
+        public TicketService(DAL.IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
         public async Task Handle(CommitTicketRequest request, string userId)
         {
             var pairsToBetIds = request.BetedPairs.Select(p => p.BetedPairId);
 
-            var betablePairs = await _betingPairs.GenericQuery()
+            var betablePairs = await UnitOfWork.BetablePairs.GenericQuery()
                 .Where(p => pairsToBetIds.Contains(p.Id))
                 .ToListAsync();
 
@@ -49,8 +39,8 @@ namespace BetingSystem.Services
 
             CalculateQuota(ticket);
 
-            _tickets.Insert(ticket);
-            await _db.SaveChanges();
+            UnitOfWork.Tickets.Insert(ticket);
+            await UnitOfWork.SaveChanges();
         }
 
         public static void CalculateQuota(Ticket ticket)

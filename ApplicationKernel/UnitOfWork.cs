@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationKernel
 {
-    public interface IDatabase
+    public interface IUnitOfWork
     {
         Task SaveChanges();
     }
 
-    public class Database : IDatabase
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly DbContext _dbContext;
 
-        public Database(DbContext dbContext)
+        public UnitOfWork(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

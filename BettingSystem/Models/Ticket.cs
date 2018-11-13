@@ -22,7 +22,7 @@ namespace BetingSystem.Models
     {
         public int Id { get; set; }
 
-        public int BetingPairId { get; set; }
+        public int BetablePairId { get; set; }
         public BetablePair BetablePair { get; set; }
 
         public BetingType BetedType { get; set; }

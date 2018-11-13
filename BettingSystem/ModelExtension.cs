@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using BetingSystem.Models;
-using Utilities;
 
 namespace BetingSystem
 {
@@ -17,9 +15,5 @@ namespace BetingSystem
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
-
-        public static double CalculateQuota(this BetedPair pair) => pair.BetablePair.QuotaForType(pair.BetedType);
-
-        public static double CalculateQuota(this Ticket ticket) => ticket.BetedPairs.Select(p => p.CalculateQuota()).Product();
     }
 }

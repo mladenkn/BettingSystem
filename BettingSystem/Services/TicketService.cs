@@ -7,6 +7,7 @@ using BetingSystem.Models;
 using BetingSystem.Repositories;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
+using Utilities;
 
 namespace BetingSystem.Services
 {
@@ -46,10 +47,15 @@ namespace BetingSystem.Services
                 UserId = userId
             };
 
-            ticket.Quota = ticket.CalculateQuota();
+            CalculateQuota(ticket);
 
             _tickets.Insert(ticket);
             await _db.SaveChanges();
+        }
+
+        public static void CalculateQuota(Ticket ticket)
+        {
+            ticket.Quota = ticket.BetedPairs.Select(p => p.BetablePair.QuotaForType(p.BetedType)).Product();
         }
 
         private IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)

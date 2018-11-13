@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ApplicationKernel\ApplicationKernel.csproj" />
+    <ProjectReference Include="..\BettingSystem\BetingSystem.csproj" />
   </ItemGroup>
 
 </Project>

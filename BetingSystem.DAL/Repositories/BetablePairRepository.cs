@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.DAL.Repositories
 {
-    public class TicketRepository : Repository<Ticket>, ITicketRepository
+    public class BetablePairRepository : Repository<BetablePair>, IBetablePairsRepository
     {
-        public TicketRepository(DbSet<Ticket> dbSet) : base(dbSet)
+        public BetablePairRepository(DbSet<BetablePair> dbSet) : base(dbSet)
         {
         }
     }

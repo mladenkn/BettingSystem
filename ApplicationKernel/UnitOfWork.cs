@@ -10,13 +10,13 @@ namespace ApplicationKernel
 
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _dbContext;
+        protected readonly DbContext DbContext;
 
         public UnitOfWork(DbContext dbContext)
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
         }
 
-        public Task SaveChanges() => _dbContext.SaveChangesAsync();
+        public Task SaveChanges() => DbContext.SaveChangesAsync();
     }
 }

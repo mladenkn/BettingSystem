@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
-
-namespace BettingSystem.Models
+﻿namespace BettingSystem.Models
 {
     public class BettingPair
     {
         public int Id { get; set; }
+
+        public int Team1Id { get; set; }
         public Team Team1 { get; set; }
+
+        public int Team2Id { get; set; }
         public Team Team2 { get; set; }
-        public IReadOnlyCollection<TypeAndQuota> TypesAndQuotas { get; set; }
 
-        public class TypeAndQuota
-        {
-            public int PairId { get; set; }
-            public BettingType Type { get; set; }
-            public double Quota { get; set; }
-        }
+        public double Team1WinQuota { get; set; }
+        public double Team2WinQuota { get; set; }
+        public double DrawQuota { get; set; }
     }
-
-    public enum BettingType { One, Two, X }
 }

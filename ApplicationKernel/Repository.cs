@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationKernel
 {
@@ -18,24 +15,19 @@ namespace ApplicationKernel
     public class Repository<TModel> : IRepository<TModel>
         where TModel : class
     {
-        public void Insert(TModel model)
+        private readonly DbSet<TModel> _dbSet;
+
+        public Repository(DbSet<TModel> dbSet)
         {
-            throw new NotImplementedException();
+            _dbSet = dbSet;
         }
 
-        public void Update(TModel model)
-        {
-            throw new NotImplementedException();
-        }
+        public void Insert(TModel model) => _dbSet.Add(model);
 
-        public void Delete(TModel model)
-        {
-            throw new NotImplementedException();
-        }
+        public void Update(TModel model) => _dbSet.Update(model);
 
-        public IQueryable<TModel> GenericQuery()
-        {
-            throw new NotImplementedException();
-        }
+        public void Delete(TModel model) => _dbSet.Remove(model);
+
+        public IQueryable<TModel> GenericQuery() => _dbSet;
     }
 }

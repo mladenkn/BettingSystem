@@ -1,26 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="BetingSystem.Models.BetingPair">
-    <Position X="5.25" Y="0.5" Width="2" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Class Name="BetingSystem.Models.BetingPair.TypeAndQuota">
-        <TypeIdentifier>
-          <NewMemberFileName>Models\BetingPair.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAACAAAAAAACAAAAAAAAAAAAAgAAAAAAAAAAAAAAQAA=</HashCode>
-      <FileName>Models\BetingPair.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Team1" />
-      <Property Name="Team2" />
-    </ShowAsAssociation>
-  </Class>
   <Class Name="BetingSystem.Models.Team">
     <Position X="12.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
@@ -41,7 +20,7 @@
   <Class Name="BetingSystem.Models.UserWallet">
     <Position X="12.25" Y="2.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAADAAAAAAAAAAAAAAAAACgACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AACDAAAAAAAAAAAAAAAAACgACAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\UserWallet.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -61,7 +40,7 @@
   <Class Name="BetingSystem.Models.Ticket">
     <Position X="7.25" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAADAAAAAAAAAAAAAAAAAAgAAAAQAACAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAADAAAAAEAAAAAAAAAAAAgAAAAAAACAAAAgAAAAAgA=</HashCode>
       <FileName>Models\Ticket.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -73,17 +52,11 @@
   </Class>
   <Class Name="BetingSystem.Models.BetedPair">
     <Position X="4" Y="5.25" Width="1.5" />
-    <AssociationLine Name="BetingPair" Type="BetingSystem.Models.BetingPair">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.368" Y="0.143" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAGAAAAAAAAAAAAAAAAAAAAAQAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAEAAAAAACAAAAAAAAAQAA=</HashCode>
       <FileName>Models\Ticket.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="BetingPair" />
       <Property Name="BetedType" />
     </ShowAsAssociation>
   </Class>
@@ -104,11 +77,28 @@
       <FileName>Models\UserWallet.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="BetingSystem.Requests.CommitTicketRequest">
+    <Position X="4" Y="0.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="BetingSystem.Requests.CommitTicketRequest.BetedPair">
+        <TypeIdentifier>
+          <NewMemberFileName>Requests\CommitTicketRequest.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAgA=</HashCode>
+      <FileName>Requests\CommitTicketRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Enum Name="BetingSystem.Models.BetingType" Collapsed="true">
     <Position X="6" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAQIA=</HashCode>
-      <FileName>Models\BetingPair.cs</FileName>
+      <HashCode>AAAAgAAAAAAAAgAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Ticket.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

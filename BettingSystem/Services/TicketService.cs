@@ -33,18 +33,11 @@ namespace BetingSystem.Services
         {
             var pairsToBetIds = request.BetedPairs.Select(p => p.BetedPairId);
 
-            var pairsToBet = await _bettingPairs.GenericQuery()
+            var betablePairs = await _bettingPairs.GenericQuery()
                 .Where(p => pairsToBetIds.Contains(p.Id))
                 .ToListAsync();
 
-            BetingType GetSelectedTypeOfPair(int pairId) =>
-                request.BetedPairs.First(p => p.BetedPairId == pairId).BetedType;
-
-            var betedPairs = pairsToBet.Select(p => new BetedPair
-            {
-                BetedType = GetSelectedTypeOfPair(p.Id),
-                BetingPairId = p.Id
-            }).ToList();
+            var betedPairs = CreateBetedPairs(request, betablePairs).ToList();
 
             var ticket = new Ticket
             {
@@ -53,8 +46,23 @@ namespace BetingSystem.Services
                 UserId = userId
             };
 
+            ticket.Quota = ticket.CalculateQuota();
+
             _tickets.Insert(ticket);
             await _db.SaveChanges();
+        }
+
+        private IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)
+        {
+            BetingType GetSelectedTypeOfPair(int pairId) =>
+                request.BetedPairs.First(p => p.BetedPairId == pairId).BetedType;
+
+            return betablePairs.Select(p => new BetedPair
+            {
+                BetedType = GetSelectedTypeOfPair(p.Id),
+                BetablePair = p,
+                BetingPairId = p.Id
+            });
         }
 
         public Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId)

@@ -15,7 +15,6 @@ namespace BetingSystem.Tests.Tickets
             var request = new CommitTicketRequest
             {
                 Stake = 10,
-
             };
         }
     }

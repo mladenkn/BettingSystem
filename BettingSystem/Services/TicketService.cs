@@ -22,7 +22,7 @@ namespace BetingSystem.Services
 
         public async Task Handle(CommitTicketRequest request, string userId)
         {
-            var pairsToBetIds = request.BetedPairs.Select(p => p.BetedPairId);
+            var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
             var betablePairs = await UnitOfWork.BetablePairs.GenericQuery()
                 .Where(p => pairsToBetIds.Contains(p.Id))
@@ -51,13 +51,13 @@ namespace BetingSystem.Services
         private static IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)
         {
             BetingType GetSelectedTypeOfPair(int pairId) =>
-                request.BetedPairs.First(p => p.BetedPairId == pairId).BetedType;
+                request.BetingPairs.First(p => p.BetedPairId == pairId).BetingType;
 
             return betablePairs.Select(p => new BetedPair
             {
                 BetedType = GetSelectedTypeOfPair(p.Id),
                 BetablePair = p,
-                BetingPairId = p.Id
+                BetablePairId = p.Id
             });
         }
 

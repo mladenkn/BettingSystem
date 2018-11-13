@@ -1,24 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using ApplicationKernel;
-using BetingSystem.DAL;
-using BetingSystem.DAL.Repositories;
-using BetingSystem.Models;
+﻿using BetingSystem.DAL;
 using Microsoft.EntityFrameworkCore;
-using IUnitOfWork = BetingSystem.DAL.IUnitOfWork;
-using UnitOfWork = BetingSystem.DAL.UnitOfWork;
 
 namespace BetingSystem.Tests
 {
     public static class TestServicesFactory
     {
-        public static IUnitOfWork UnitOfWork()
+        public static BetingSystemDbContext DbContext()
         {
             var options = new DbContextOptionsBuilder<BetingSystemDbContext>()
                 .UseInMemoryDatabase("test-db")
                 .Options;
-            var context = new BetingSystemDbContext(options);
-            return new UnitOfWork(context);
+            return new BetingSystemDbContext(options);
         }
     }
 }

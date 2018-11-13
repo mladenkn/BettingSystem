@@ -20,10 +20,10 @@ namespace BetingSystem.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _tickets;
-        private readonly IBettingPairsRepository _betingPairs;
+        private readonly IBetingPairsRepository _betingPairs;
         private readonly IDatabase _db;
 
-        public TicketService(ITicketRepository tickets, IBettingPairsRepository betingPairs, IDatabase db)
+        public TicketService(ITicketRepository tickets, IBetingPairsRepository betingPairs, IDatabase db)
         {
             _tickets = tickets;
             _betingPairs = betingPairs;

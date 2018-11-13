@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BettingSystem.Models;
-using BettingSystem.Requests;
+using BetingSystem.Models;
+using BetingSystem.Requests;
 
-namespace BettingSystem.Services
+namespace BetingSystem.Services
 {
     public interface ITicketService
     {

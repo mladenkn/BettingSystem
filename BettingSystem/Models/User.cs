@@ -1,4 +1,4 @@
-﻿namespace BettingSystem.Models
+﻿namespace BetingSystem.Models
 {
     public class User
     {

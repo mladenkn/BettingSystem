@@ -1,7 +1,6 @@
-using System;
 using Xunit;
 
-namespace BettingSystem.Tests
+namespace BetingSystem.Tests
 {
     public class Test1
     {

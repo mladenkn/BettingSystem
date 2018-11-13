@@ -1,4 +1,4 @@
-﻿namespace BettingSystem.Services
+﻿namespace BetingSystem.Services
 {
     public interface IWalletService
     {

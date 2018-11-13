@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using BettingSystem.Models;
+using BetingSystem.Models;
 
-namespace BettingSystem.Requests
+namespace BetingSystem.Requests
 {
     public class CommitTicketRequest
     {

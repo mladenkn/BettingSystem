@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BettingSystem.Models
+namespace BetingSystem.Models
 {
     public class Ticket
     {

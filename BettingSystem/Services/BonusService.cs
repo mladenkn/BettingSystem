@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BettingSystem.Models;
+using BetingSystem.Models;
 
-namespace BettingSystem.Services
+namespace BetingSystem.Services
 {
     public interface IBonusService
     {

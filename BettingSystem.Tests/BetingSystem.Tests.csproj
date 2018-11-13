@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BettingSystem.RestApi\BettingSystem.RestApi.csproj" />
+    <ProjectReference Include="..\BettingSystem.RestApi\BetingSystem.RestApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BettingSystem\BettingSystem.csproj" />
+    <ProjectReference Include="..\BettingSystem\BetingSystem.csproj" />
   </ItemGroup>
 
 </Project>

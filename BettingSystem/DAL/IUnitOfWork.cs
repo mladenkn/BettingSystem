@@ -8,5 +8,6 @@ namespace BetingSystem.DAL
     {
         IBetablePairsRepository BetablePairs { get; }
         ITicketRepository Tickets { get; }
+        IBetedPairRepository BetedPairs { get; }
     }
 }

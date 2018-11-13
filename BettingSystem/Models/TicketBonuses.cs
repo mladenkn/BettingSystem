@@ -1,6 +1,6 @@
 ﻿namespace BetingSystem.Models
 {
-    public abstract class TicketBonus
+    public class TicketBonus
     {
         public int Id { get; set; }
     }

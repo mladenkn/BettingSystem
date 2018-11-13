@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BetingSystem.Models
 {
@@ -6,6 +7,7 @@ namespace BetingSystem.Models
     {
         public int Id { get; set; }
 
+        [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         public User User { get; set; }
 
@@ -18,6 +20,7 @@ namespace BetingSystem.Models
 
     public class WalletTransaction
     {
+        public int Id { get; set; }
         public int WalletId { get; set; }
         public double MoneyInvolved { get; set; }
         public WalletTransactionType Type { get; set; }

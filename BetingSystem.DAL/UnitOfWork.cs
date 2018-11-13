@@ -22,5 +22,9 @@ namespace BetingSystem.DAL
         private ITicketRepository _tickets;
         public ITicketRepository Tickets =>
             _tickets ?? (_tickets = new TicketRepository(DbContext.Set<Ticket>()));
+
+        private IBetedPairRepository _betedPairs;
+        public IBetedPairRepository BetedPairs =>
+            _betedPairs ?? (_betedPairs = new BetedPairRepository(DbContext.Set<BetedPair>()));
     }
 }

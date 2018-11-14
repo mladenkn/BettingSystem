@@ -41,73 +41,76 @@ namespace BetingSystem.Services
                 })
                 .Apply();
         }
+    }
 
-        public interface IBonusApplier
+    public interface IBonusApplier
+    {
+        Task Apply();
+        IBonusApplier ApplyAdditionalFor<TBonus>(Action<Ticket, TBonus> apply);
+        IBonusApplier UseTicket(Ticket ticket);
+        IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
+        IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
+    }
+
+    public delegate Task<IEnumerable<ITicketBonus>> GetAllTicketBonuses();
+
+    public class BonusApplier : IBonusApplier
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly GetAllTicketBonuses _getAllTicketBonuses;
+        private Ticket _ticket;
+        private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
+            new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
+        private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
+
+        public BonusApplier(IUnitOfWork unitOfWork, GetAllTicketBonuses getAllTicketBonuses)
         {
-            Task Apply();
-            IBonusApplier ApplyAdditionalFor<TBonus>(Action<Ticket, TBonus> apply);
-            IBonusApplier UseTicket(Ticket ticket);
-            IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
-            IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
+            _unitOfWork = unitOfWork;
+            _getAllTicketBonuses = getAllTicketBonuses;
         }
 
-        public class BonusApplier : IBonusApplier
+        public IBonusApplier UseTicket(Ticket ticket)
         {
-            private readonly IUnitOfWork _unitOfWork;
-            private readonly IBonusRepository _bonusRepository;
-            private Ticket _ticket;
-            private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers = 
-                new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
-            private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
+            _ticket = ticket;
+            return this;
+        }
 
-            public BonusApplier(IUnitOfWork unitOfWork, IBonusRepository bonusRepository)
-            {
-                _unitOfWork = unitOfWork;
-                _bonusRepository = bonusRepository;
-            }
+        public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply)
+        {
+            _verifyers[typeof(TBonus)] = b => shouldApply((TBonus)b);
+            return this;
+        }
 
-            public IBonusApplier UseTicket(Ticket ticket)
-            {
-                _ticket = ticket;
-                return this;
-            }
+        public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant)
+        {
+            return VerifyForBonus<TBonus>(b => Task.FromResult(shouldGrant(b)));
+        }
 
-            public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply)
+        public IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)
+        {
+            _appliers.Add(b =>
             {
-                _verifyers[typeof(TBonus)] = b => shouldApply((TBonus) b);
-                return this;
-            }
+                if (b is TBonusType wantedBonus)
+                    apply(_ticket, wantedBonus);
+            });
+            return this;
+        }
 
-            public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant)
-            {
-                return VerifyForBonus<TBonus>(b => Task.FromResult(shouldGrant(b)));
-            }
+        public async Task Apply()
+        {
+            var allBonuses = await _getAllTicketBonuses();
 
-            public IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)
+            foreach (var bonus in allBonuses)
             {
-                _appliers.Add(b =>
+                var shouldGrant = _verifyers[bonus.GetType()];
+                if (await shouldGrant(bonus))
                 {
-                    if(b is TBonusType wantedBonus)
-                        apply(_ticket, wantedBonus);
-                });
-                return this;
-            }
+                    _unitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = bonus.Name, TicketId = _ticket.Id });
 
-            public async Task Apply()
-            {
-                var allBonuses = await _bonusRepository.GetAll();
-                foreach (var bonus in allBonuses.All.NonNulls())
-                {
-                    var shouldGrant = _verifyers[bonus.GetType()];
-                    if (await shouldGrant(bonus))
-                    {
-                        _unitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = bonus.Name, TicketId = _ticket.Id });
-                        
-                        _appliers.ForEach(a => a(bonus));
+                    _appliers.ForEach(a => a(bonus));
 
-                        _unitOfWork.Tickets.Update(_ticket);
-                        await _unitOfWork.SaveChanges();
-                    }
+                    _unitOfWork.Tickets.Update(_ticket);
+                    await _unitOfWork.SaveChanges();
                 }
             }
         }

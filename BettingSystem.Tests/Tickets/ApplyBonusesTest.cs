@@ -20,14 +20,9 @@ namespace BetingSystem.Tests.Tickets
         {
             var data = new DataFactory();
 
-            var bonuses = new Bonuses
-            {
-                VariousSportsBonus = new VariousSportsBonus { IncreasesQuotaByN = 4, RequiredNumberOfDifferentSports = 3}
-            };
+            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaByN = 4, RequiredNumberOfDifferentSports = 3};
+            IEnumerable<ITicketBonus> allBonues = new[] {variousSporstsBonus};
 
-            var bonusesRepository = new Mock<IBonusRepository>();
-            bonusesRepository.Setup(r => r.GetAll()).Returns(Task.FromResult(bonuses));
-            
             var unitofWork = new Mock<IUnitOfWork>();
             unitofWork.Setup(u => u.AppliedBonuses.Insert(null));
             unitofWork.Setup(u => u.Tickets.Update(null));
@@ -37,14 +32,14 @@ namespace BetingSystem.Tests.Tickets
 
             var ticket = new Ticket { Id = 4, BetedPairs = betedPairs };
 
-            var bonusService = new BonusService(unitofWork.Object, new BonusService.BonusApplier(unitofWork.Object, bonusesRepository.Object));
+            var bonusService = new BonusService(unitofWork.Object, new BonusApplier(unitofWork.Object, () => Task.FromResult(allBonues)));
 
             await bonusService.ApplyBonuses(ticket);
 
             unitofWork.Verify(u => u.AppliedBonuses.Insert(It.Is<AppliedBonus>(b =>
-                b.TicketId == ticket.Id && b.BonusName == bonuses.VariousSportsBonus.Name)), Times.Once());
+                b.TicketId == ticket.Id && b.BonusName == variousSporstsBonus.Name)), Times.Once());
 
-            ticket.Quota.Should().Be(bonuses.VariousSportsBonus.IncreasesQuotaByN);
+            ticket.Quota.Should().Be(variousSporstsBonus.IncreasesQuotaByN);
         }
     }
 }

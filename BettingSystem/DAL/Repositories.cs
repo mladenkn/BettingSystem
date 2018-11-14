@@ -15,10 +15,4 @@ namespace BetingSystem.DAL
     public interface IBetedPairRepository : IRepository<BetedPair>
     {
     }
-
-    public interface IBonusRepository
-    {
-        Task<Bonuses> GetAll();
-        Task Save(ITicketBonus bonus);
-    }
 }

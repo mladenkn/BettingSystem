@@ -8,6 +8,7 @@ using BetingSystem.Models;
 using BetingSystem.Requests;
 using BetingSystem.Services;
 using FluentAssertions;
+using Moq;
 using Utilities;
 using Xunit;
 
@@ -59,7 +60,7 @@ namespace BetingSystem.Tests.Tickets
 
             db.SaveChanges();
 
-            var service = new TicketService(new UnitOfWork(db));
+            var service = new TicketService(new UnitOfWork(db), Mock.Of<IBonusService>());
             await service.Handle(request, userId);
 
             var commitedTicket = db.Tickets.First();

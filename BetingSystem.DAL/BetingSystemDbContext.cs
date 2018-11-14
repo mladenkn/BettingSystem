@@ -16,5 +16,11 @@ namespace BetingSystem.DAL
         public BetingSystemDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AppliedBonus>()
+                .HasKey(b => new {b.TicketId, b.BonusName});
+        }
     }
 }

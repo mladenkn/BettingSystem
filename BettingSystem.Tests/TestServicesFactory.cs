@@ -12,5 +12,7 @@ namespace BetingSystem.Tests
                 .Options;
             return new BetingSystemDbContext(options);
         }
+
+        public static UnitOfWork UnitOfWork(BetingSystemDbContext db) => new UnitOfWork(db);
     }
 }

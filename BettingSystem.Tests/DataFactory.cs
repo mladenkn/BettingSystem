@@ -15,5 +15,27 @@ namespace BetingSystem.Tests
                 DrawQuota = drawQuota
             };
         }
+
+        public BetedPair BetedPair(BetablePair betablePair, BetingType type)
+        {
+            return new BetedPair
+            {
+                BetablePair = betablePair,
+                BetablePairId = betablePair.Id,
+                BetedType = type
+            };
+        }
+
+        public BetedPair BetedPair(int sportId)
+        {
+            return new BetedPair
+            {
+                BetablePair = new BetablePair
+                {
+                    Team1 = new Team { SportId = sportId },
+                    Team2 = new Team { SportId = sportId },
+                }
+            };
+        }
     }
 }

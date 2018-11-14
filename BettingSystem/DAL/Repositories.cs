@@ -19,6 +19,6 @@ namespace BetingSystem.DAL
     public interface IBonusRepository
     {
         Task<Bonuses> GetAll();
-        Task Save(TicketBonus bonus);
+        Task Save(ITicketBonus bonus);
     }
 }

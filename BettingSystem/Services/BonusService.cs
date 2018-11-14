@@ -26,28 +26,30 @@ namespace BetingSystem.Services
             var allBonuses = await _bonusRepository.GetAll();
 
             var numberOfSportsOnTicket = ticket.BetedPairs
-                .SelectMany(p => new []{ p.BetablePair.Team1.SportId, p.BetablePair.Team2.SportId })
+                .Select(p => p.BetablePair.Team1.SportId )
                 .Distinct()
                 .Count();
 
             if (allBonuses.VariousSportsBonus != null)
             {
-                if(numberOfSportsOnTicket >= allBonuses.VariousSportsBonus.RequiredNumberOfDifferentSports)
-                {
-                    UnitOfWork.AppliedBonuses.Insert(new AppliedBonus{BonusName = allBonuses.VariousSportsBonus.Name, TicketId = ticket.Id});
-                    await UnitOfWork.SaveChanges();
-                }
+                if (numberOfSportsOnTicket >= allBonuses.VariousSportsBonus.RequiredNumberOfDifferentSports)
+                    await Apply(ticket, allBonuses.VariousSportsBonus);
             }
 
             if(allBonuses.AllSportsBonus != null)
             {
                 var numberOfSports = await UnitOfWork.Sports.GenericQuery().Select(s => s.Id).Distinct().CountAsync();
                 if (numberOfSportsOnTicket >= numberOfSports)
-                {
-                    UnitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = allBonuses.AllSportsBonus.Name, TicketId = ticket.Id });
-                    await UnitOfWork.SaveChanges();
-                }
+                    await Apply(ticket, allBonuses.AllSportsBonus);
             }
+        }
+
+        private async Task Apply(Ticket ticket, IQuotaIncreasingBonus bonus)
+        {
+            UnitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = bonus.Name, TicketId = ticket.Id });
+            ticket.Quota += bonus.IncreasesQuotaByN;
+            UnitOfWork.Tickets.Update(ticket);
+            await UnitOfWork.SaveChanges();
         }
     }
 }

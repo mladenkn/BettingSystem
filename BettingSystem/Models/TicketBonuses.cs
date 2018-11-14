@@ -1,19 +1,28 @@
-﻿namespace BetingSystem.Models
+﻿using System.Collections.Generic;
+
+namespace BetingSystem.Models
 {
-    public class TicketBonus
+    public interface ITicketBonus
     {
+        string Name { get; set; }
+    }
+
+    public interface IQuotaIncreasingBonus : ITicketBonus
+    {
+        double IncreasesQuotaByN { get; set; }
+    }
+
+    public class VariousSportsBonus : IQuotaIncreasingBonus
+    {
+        public int RequiredNumberOfDifferentSports { get; set; }
+        public double IncreasesQuotaByN { get; set; }
         public string Name { get; set; }
     }
 
-    public class VariousSportsBonus : TicketBonus
+    public class AllSportsBonus : IQuotaIncreasingBonus
     {
-        public int IncreasesQuotaByN { get; set; }
-        public int RequiredNumberOfDifferentSports { get; set; }
-    }
-
-    public class AllSportsBonus : TicketBonus
-    {
-        public int IncreasesQuotaByN { get; set; }
+        public double IncreasesQuotaByN { get; set; }
+        public string Name { get; set; }
     }
 
     public class AppliedBonus
@@ -26,5 +35,7 @@
     {
         public VariousSportsBonus VariousSportsBonus { get; set; }
         public AllSportsBonus AllSportsBonus { get; set; }
+
+        public IEnumerable<ITicketBonus> All => new ITicketBonus[] {VariousSportsBonus, AllSportsBonus};
     }
 }

@@ -20,7 +20,7 @@ namespace BetingSystem.Tests.Tickets
         {
             var data = new DataFactory();
 
-            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaByN = 4, RequiredNumberOfDifferentSports = 3};
+            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3};
             IEnumerable<ITicketBonus> allBonues = new[] {variousSporstsBonus};
 
             var unitofWork = new Mock<IUnitOfWork>();
@@ -30,7 +30,8 @@ namespace BetingSystem.Tests.Tickets
             var sportId = 1;
             var betedPairs = CollectionUtils.Generate(() => data.BetedPair(sportId++), 3);
 
-            var ticket = new Ticket { Id = 4, BetedPairs = betedPairs };
+            var quotaWithoutBonus = 2;
+            var ticket = new Ticket { Quota = quotaWithoutBonus, Id = 4, BetedPairs = betedPairs };
 
             var bonusService = new BonusService(unitofWork.Object, new BonusApplier(unitofWork.Object, () => Task.FromResult(allBonues)));
 
@@ -39,7 +40,7 @@ namespace BetingSystem.Tests.Tickets
             unitofWork.Verify(u => u.AppliedBonuses.Insert(It.Is<AppliedBonus>(b =>
                 b.TicketId == ticket.Id && b.BonusName == variousSporstsBonus.Name)), Times.Once());
 
-            ticket.Quota.Should().Be(variousSporstsBonus.IncreasesQuotaByN);
+            ticket.Quota.Should().Be(variousSporstsBonus.IncreasesQuotaBy + quotaWithoutBonus);
         }
     }
 }

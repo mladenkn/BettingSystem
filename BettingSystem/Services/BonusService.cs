@@ -32,7 +32,7 @@ namespace BetingSystem.Services
 
             await _bonusApplier
                 .UseTicket(ticket)
-                .ApplyAdditionalFor<IQuotaIncreasingBonus>((t, b) => t.Quota += b.IncreasesQuotaByN)
+                .ApplyAdditionalFor<IQuotaIncreasingBonus>((t, b) => t.Quota += b.IncreasesQuotaBy)
                 .VerifyForBonus<VariousSportsBonus>(b => numberOfSportsOnTicket >= b.RequiredNumberOfDifferentSports)
                 .VerifyForBonus<AllSportsBonus>(async b =>
                 {

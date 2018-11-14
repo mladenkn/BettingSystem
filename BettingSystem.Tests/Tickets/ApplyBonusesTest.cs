@@ -37,7 +37,7 @@ namespace BetingSystem.Tests.Tickets
 
             var ticket = new Ticket { Id = 4, BetedPairs = betedPairs };
 
-            var bonusService = new BonusService(unitofWork.Object, bonusesRepository.Object);
+            var bonusService = new BonusService(unitofWork.Object, new BonusService.BonusApplier(unitofWork.Object, bonusesRepository.Object));
 
             await bonusService.ApplyBonuses(ticket);
 

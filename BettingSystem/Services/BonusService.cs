@@ -16,25 +16,22 @@ namespace BetingSystem.Services
 
     public class BonusService : AbstractService, IBonusService
     {
-        private readonly IBonusRepository _bonusRepository;
+        private readonly IBonusApplier _bonusApplier;
 
-        public BonusService(IUnitOfWork unitOfWork, IBonusRepository bonusRepository) : base(unitOfWork)
+        public BonusService(IUnitOfWork unitOfWork, IBonusApplier bonusApplier) : base(unitOfWork)
         {
-            _bonusRepository = bonusRepository;
+            _bonusApplier = bonusApplier;
         }
 
         public async Task ApplyBonuses(Ticket ticket)
         {
-            var allBonuses = await _bonusRepository.GetAll();
-
             var numberOfSportsOnTicket = ticket.BetedPairs
                 .Select(p => p.BetablePair.Team1.SportId)
                 .Distinct()
                 .Count();
 
-            await new BonusApplier(UnitOfWork)
+            await _bonusApplier
                 .UseTicket(ticket)
-                .UseBonuses(allBonuses.All.NonNulls())
                 .ApplyAdditionalFor<IQuotaIncreasingBonus>((t, b) => t.Quota += b.IncreasesQuotaByN)
                 .VerifyForBonus<VariousSportsBonus>(b => numberOfSportsOnTicket >= b.RequiredNumberOfDifferentSports)
                 .VerifyForBonus<AllSportsBonus>(async b =>
@@ -45,45 +42,49 @@ namespace BetingSystem.Services
                 .Apply();
         }
 
-        private class BonusApplier
+        public interface IBonusApplier
+        {
+            Task Apply();
+            IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply);
+            IBonusApplier UseTicket(Ticket ticket);
+            IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
+            IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
+        }
+
+        public class BonusApplier : IBonusApplier
         {
             private readonly IUnitOfWork _unitOfWork;
+            private readonly IBonusRepository _bonusRepository;
             private Ticket _ticket;
-            private IEnumerable<ITicketBonus> _bonuses;
-            private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
-                    new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
+            private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers = 
+                new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
             private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
 
-            public BonusApplier(IUnitOfWork unitOfWork)
+            public BonusApplier(IUnitOfWork unitOfWork, IBonusRepository bonusRepository)
             {
                 _unitOfWork = unitOfWork;
+                _bonusRepository = bonusRepository;
             }
 
-            public BonusApplier UseTicket(Ticket ticket)
+            public IBonusApplier UseTicket(Ticket ticket)
             {
                 _ticket = ticket;
                 return this;
             }
 
-            public BonusApplier UseBonuses(IEnumerable<ITicketBonus> bonuses)
+            public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply)
             {
-                _bonuses = bonuses;
+                _verifyers[typeof(TBonus)] = b => shouldApply((TBonus) b);
                 return this;
             }
 
-            public BonusApplier VerifyForBonus<TBonusType>(Func<TBonusType, Task<bool>> shouldApply)
+            public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant)
             {
-                _verifyers[typeof(TBonusType)] = b => shouldApply((TBonusType) b);
+                _verifyers[typeof(TBonus)] = b => Task.FromResult(shouldGrant((TBonus)b));
                 return this;
             }
 
-            public BonusApplier VerifyForBonus<TBonusType>(Func<TBonusType, bool> shouldGrant)
-            {
-                _verifyers[typeof(TBonusType)] = b => Task.FromResult(shouldGrant((TBonusType)b));
-                return this;
-            }
-
-            public BonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)
+            public IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)
             {
                 _appliers.Add(b =>
                 {
@@ -95,7 +96,8 @@ namespace BetingSystem.Services
 
             public async Task Apply()
             {
-                foreach (var bonus in _bonuses)
+                var allBonuses = await _bonusRepository.GetAll();
+                foreach (var bonus in allBonuses.All.NonNulls())
                 {
                     var shouldGrant = _verifyers[bonus.GetType()];
                     if (await shouldGrant(bonus))

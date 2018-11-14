@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ApplicationKernel;
 using BetingSystem.DAL.Repositories;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -26,5 +27,9 @@ namespace BetingSystem.DAL
         private IBetedPairRepository _betedPairs;
         public IBetedPairRepository BetedPairs =>
             _betedPairs ?? (_betedPairs = new BetedPairRepository(DbContext.Set<BetedPair>()));
+
+        private IRepository<Sport> _sports;
+        public IRepository<Sport> Sports =>
+            _sports ?? (_sports = new Repository<Sport>(DbContext.Set<Sport>()));
     }
 }

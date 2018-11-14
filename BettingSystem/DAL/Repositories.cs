@@ -1,4 +1,5 @@
-﻿using ApplicationKernel;
+﻿using System.Threading.Tasks;
+using ApplicationKernel;
 using BetingSystem.Models;
 
 namespace BetingSystem.DAL
@@ -13,5 +14,11 @@ namespace BetingSystem.DAL
 
     public interface IBetedPairRepository : IRepository<BetedPair>
     {
+    }
+
+    public interface IBonusRepository
+    {
+        Task<Bonuses> GetAll();
+        Task Save(TicketBonus bonus);
     }
 }

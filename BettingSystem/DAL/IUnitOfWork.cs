@@ -1,6 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ApplicationKernel;
+using BetingSystem.Models;
 
 namespace BetingSystem.DAL
 {
@@ -9,5 +8,6 @@ namespace BetingSystem.DAL
         IBetablePairsRepository BetablePairs { get; }
         ITicketRepository Tickets { get; }
         IBetedPairRepository BetedPairs { get; }
+        IRepository<Sport> Sports { get; }
     }
 }

@@ -15,7 +15,7 @@ namespace BetingSystem.Models
 
         public double Stake { get; set; }
 
-        public IReadOnlyCollection<TicketBonus> Bonuses { get; set; }
+        public IList<string> Bonuses { get; } = new List<string>();
     }
 
     public class BetedPair

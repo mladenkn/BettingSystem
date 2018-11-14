@@ -16,20 +16,19 @@ namespace BetingSystem.Tests.Tickets
 {
     public class CommitTicketRequestTest
     {
-
         [Fact]
         public async Task Run()
         {
             var data = new DataFactory();
             var db = TestServicesFactory.DbContext();
-
+            
             var pair1SelectedQuota = 23;
             var pair2SelectedQuota = 6;
             var pair3SelectedQuota = 2;
 
-            var betablePair1 = data.BetablePair(pair1SelectedQuota, -1, -1);
-            var betablePair2 = data.BetablePair(-1, pair2SelectedQuota, -1);
-            var betablePair3 = data.BetablePair(-1, -1, pair3SelectedQuota);
+            var betablePair1 = data.BetablePair(pair1SelectedQuota, -1, -1, new Team(), new Team());
+            var betablePair2 = data.BetablePair(-1, pair2SelectedQuota, -1, new Team(), new Team());
+            var betablePair3 = data.BetablePair(-1, -1, pair3SelectedQuota, new Team(), new Team());
 
             db.AddRange(betablePair1, betablePair2, betablePair3);
             

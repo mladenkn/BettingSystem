@@ -18,15 +18,21 @@ namespace BetingSystem.Services
 
     public class TicketService : AbstractService, ITicketService
     {
-        public TicketService(DAL.IUnitOfWork unitOfWork) : base(unitOfWork) { }
+        private readonly IBonusService _bonusService;
+        public TicketService(DAL.IUnitOfWork unitOfWork, IBonusService bonusService) : base(unitOfWork)
+        {
+            _bonusService = bonusService;
+        }
 
         public async Task Handle(CommitTicketRequest request, string userId)
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
             var betablePairs = await UnitOfWork.BetablePairs.GenericQuery()
+                .Include(p => p.Team1)
+                .Include(p => p.Team2)
                 .Where(p => pairsToBetIds.Contains(p.Id))
-                .ToListAsync();
+                .ToArrayAsync();
 
             var betedPairs = CreateBetedPairs(request, betablePairs).ToList();
 
@@ -38,9 +44,9 @@ namespace BetingSystem.Services
             };
 
             CalculateQuota(ticket);
-
             UnitOfWork.Tickets.Insert(ticket);
             await UnitOfWork.SaveChanges();
+            await _bonusService.ApplyBonuses(ticket);
         }
 
         public static void CalculateQuota(Ticket ticket)

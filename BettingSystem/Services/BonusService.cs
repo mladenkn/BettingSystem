@@ -27,7 +27,8 @@ namespace BetingSystem.Services
 
             var numberOfSportsOnTicket = ticket.BetedPairs
                 .SelectMany(p => new []{ p.BetablePair.Team1.SportId, p.BetablePair.Team2.SportId })
-                .Distinct().Count();
+                .Distinct()
+                .Count();
 
             if (allBonuses.VariousSportsBonus != null)
             {

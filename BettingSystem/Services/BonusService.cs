@@ -45,7 +45,7 @@ namespace BetingSystem.Services
         public interface IBonusApplier
         {
             Task Apply();
-            IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply);
+            IBonusApplier ApplyAdditionalFor<TBonus>(Action<Ticket, TBonus> apply);
             IBonusApplier UseTicket(Ticket ticket);
             IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
             IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
@@ -80,8 +80,7 @@ namespace BetingSystem.Services
 
             public IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant)
             {
-                _verifyers[typeof(TBonus)] = b => Task.FromResult(shouldGrant((TBonus)b));
-                return this;
+                return VerifyForBonus<TBonus>(b => Task.FromResult(shouldGrant(b)));
             }
 
             public IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)

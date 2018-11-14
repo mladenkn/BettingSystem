@@ -24,13 +24,17 @@ namespace BetingSystem.Services
         public async Task ApplyBonuses(Ticket ticket)
         {
             var allBonuses = await _bonusRepository.GetAll();
-            var numberOfSportsOnTicket = ticket.BetedPairs.Select(p => p.BetablePair.Team1.SportId).Distinct().Count();
 
-            if (allBonuses.VariousSportsBonus is null)
+            var numberOfSportsOnTicket = ticket.BetedPairs
+                .SelectMany(p => new []{ p.BetablePair.Team1.SportId, p.BetablePair.Team2.SportId })
+                .Distinct().Count();
+
+            if (allBonuses.VariousSportsBonus != null)
             {
                 if(numberOfSportsOnTicket >= allBonuses.VariousSportsBonus.RequiredNumberOfDifferentSports)
                 {
-                    // TODO
+                    UnitOfWork.AppliedBonuses.Insert(new AppliedBonus{BonusName = allBonuses.VariousSportsBonus.Name, TicketId = ticket.Id});
+                    await UnitOfWork.SaveChanges();
                 }
             }
 
@@ -39,11 +43,10 @@ namespace BetingSystem.Services
                 var numberOfSports = await UnitOfWork.Sports.GenericQuery().Select(s => s.Id).Distinct().CountAsync();
                 if (numberOfSportsOnTicket >= numberOfSports)
                 {
-                    // TODO
+                    UnitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = allBonuses.AllSportsBonus.Name, TicketId = ticket.Id });
+                    await UnitOfWork.SaveChanges();
                 }
             }
-
-            throw new NotImplementedException();
         }
     }
 }

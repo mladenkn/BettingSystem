@@ -9,7 +9,7 @@ namespace BetingSystem.DAL
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<UserWallet> UserWallets { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<TicketBonus> TicketBonuses { get; set; }
+        public DbSet<AppliedBonus> AppliedBonuses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Sport> Sports { get; set; }
 

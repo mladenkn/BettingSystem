@@ -5,9 +5,9 @@ namespace BetingSystem.DAL
 {
     public interface IUnitOfWork : ApplicationKernel.IUnitOfWork
     {
-        IBetablePairsRepository BetablePairs { get; }
+        IRepository<BetablePair> BetablePairs { get; }
         ITicketRepository Tickets { get; }
-        IBetedPairRepository BetedPairs { get; }
         IRepository<Sport> Sports { get; }
+        IRepository<AppliedBonus> AppliedBonuses { get; }
     }
 }

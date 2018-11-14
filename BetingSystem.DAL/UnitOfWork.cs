@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApplicationKernel;
+﻿using ApplicationKernel;
 using BetingSystem.DAL.Repositories;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +11,20 @@ namespace BetingSystem.DAL
         {
         }
 
-        private IBetablePairsRepository _betablePairs;
-        public IBetablePairsRepository BetablePairs => 
-            _betablePairs ?? (_betablePairs = new BetablePairRepository(DbContext.Set<BetablePair>()));
+        private IRepository<BetablePair> _betablePairs;
+        public IRepository<BetablePair> BetablePairs => 
+            _betablePairs ?? (_betablePairs = new Repository<BetablePair>(DbContext.Set<BetablePair>()));
 
         private ITicketRepository _tickets;
         public ITicketRepository Tickets =>
             _tickets ?? (_tickets = new TicketRepository(DbContext.Set<Ticket>()));
 
-        private IBetedPairRepository _betedPairs;
-        public IBetedPairRepository BetedPairs =>
-            _betedPairs ?? (_betedPairs = new BetedPairRepository(DbContext.Set<BetedPair>()));
-
         private IRepository<Sport> _sports;
         public IRepository<Sport> Sports =>
             _sports ?? (_sports = new Repository<Sport>(DbContext.Set<Sport>()));
+
+        private IRepository<AppliedBonus> _appliedBonus;
+        public IRepository<AppliedBonus> AppliedBonuses =>
+            _appliedBonus ?? (_appliedBonus = new Repository<AppliedBonus>(DbContext.Set<AppliedBonus>()));
     }
 }

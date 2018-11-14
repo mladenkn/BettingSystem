@@ -16,6 +16,12 @@
         public int IncreasesQuotaByN { get; set; }
     }
 
+    public class AppliedBonus
+    {
+        public int TicketId { get; set; }
+        public string BonusName { get; set; }
+    }
+
     public class Bonuses
     {
         public VariousSportsBonus VariousSportsBonus { get; set; }

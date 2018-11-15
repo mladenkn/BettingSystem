@@ -19,8 +19,9 @@ namespace BetingSystem.Tests.Tickets
         public async Task Run()
         {
             var data = new DataFactory();
+            var db = TestServicesFactory.DbContext();
 
-            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3};
+            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3, Name = "a"};
             IEnumerable<ITicketBonus> allBonues = new[] {variousSporstsBonus};
 
             var unitofWork = new Mock<IUnitOfWork>();
@@ -32,13 +33,16 @@ namespace BetingSystem.Tests.Tickets
 
             var quotaWithoutBonus = 2;
             var ticket = new Ticket { Quota = quotaWithoutBonus, Id = 4, BetedPairs = betedPairs };
+            db.Add(ticket);
+            await db.SaveChangesAsync();
 
-            var bonusService = new BonusService(unitofWork.Object, new BonusApplier(unitofWork.Object, () => Task.FromResult(allBonues)));
+            var bonusService = new BonusService(unitofWork.Object, new BonusApplier(unitofWork.Object, () => Task.FromResult(allBonues), db));
 
             await bonusService.ApplyBonuses(ticket);
 
-            unitofWork.Verify(u => u.AppliedBonuses.Insert(It.Is<AppliedBonus>(b =>
-                b.TicketId == ticket.Id && b.BonusName == variousSporstsBonus.Name)), Times.Once());
+            var appliedBonus = db.AppliedBonuses.Single();
+            appliedBonus.TicketId.Should().Be(ticket.Id);
+            appliedBonus.BonusName.Should().Be(variousSporstsBonus.Name);
 
             ticket.Quota.Should().Be(variousSporstsBonus.IncreasesQuotaBy + quotaWithoutBonus);
         }

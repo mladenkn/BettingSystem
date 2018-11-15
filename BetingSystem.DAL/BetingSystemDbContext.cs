@@ -12,6 +12,7 @@ namespace BetingSystem.DAL
         public DbSet<AppliedBonus> AppliedBonuses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Sport> Sports { get; set; }
+        public DbSet<BetedPair> BetedPairs { get; set; }
 
         public BetingSystemDbContext(DbContextOptions options) : base(options)
         {

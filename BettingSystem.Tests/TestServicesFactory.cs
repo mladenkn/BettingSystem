@@ -1,4 +1,5 @@
-﻿using BetingSystem.DAL;
+﻿using System;
+using BetingSystem.DAL;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.Tests
@@ -8,7 +9,7 @@ namespace BetingSystem.Tests
         public static BetingSystemDbContext DbContext()
         {
             var options = new DbContextOptionsBuilder<BetingSystemDbContext>()
-                .UseInMemoryDatabase("test-db")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
             return new BetingSystemDbContext(options);
         }

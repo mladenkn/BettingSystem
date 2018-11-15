@@ -58,15 +58,17 @@ namespace BetingSystem.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly GetAllTicketBonuses _getAllTicketBonuses;
+        private readonly DbContext _db;
         private Ticket _ticket;
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
 
-        public BonusApplier(IUnitOfWork unitOfWork, GetAllTicketBonuses getAllTicketBonuses)
+        public BonusApplier(IUnitOfWork unitOfWork, GetAllTicketBonuses getAllTicketBonuses, DbContext db)
         {
             _unitOfWork = unitOfWork;
             _getAllTicketBonuses = getAllTicketBonuses;
+            _db = db;
         }
 
         public IBonusApplier UseTicket(Ticket ticket)
@@ -105,12 +107,10 @@ namespace BetingSystem.Services
                 var shouldGrant = _verifyers[bonus.GetType()];
                 if (await shouldGrant(bonus))
                 {
-                    _unitOfWork.AppliedBonuses.Insert(new AppliedBonus { BonusName = bonus.Name, TicketId = _ticket.Id });
-
+                    _db.Add(new AppliedBonus { BonusName = bonus.Name, TicketId = _ticket.Id });
                     _appliers.ForEach(a => a(bonus));
-
-                    _unitOfWork.Tickets.Update(_ticket);
-                    await _unitOfWork.SaveChanges();
+                    _db.Update(_ticket);
+                    await _db.SaveChangesAsync();
                 }
             }
         }

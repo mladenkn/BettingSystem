@@ -19,9 +19,12 @@ namespace BetingSystem.Services
     public class TicketService : AbstractService, ITicketService
     {
         private readonly IBonusService _bonusService;
-        public TicketService(DAL.IUnitOfWork unitOfWork, IBonusService bonusService) : base(unitOfWork)
+        private readonly DbContext _db;
+
+        public TicketService(DAL.IUnitOfWork unitOfWork, IBonusService bonusService, DbContext db) : base(unitOfWork)
         {
             _bonusService = bonusService;
+            _db = db;
         }
 
         public async Task Handle(CommitTicketRequest request, string userId)
@@ -44,8 +47,8 @@ namespace BetingSystem.Services
             };
 
             CalculateQuota(ticket);
-            UnitOfWork.Tickets.Insert(ticket);
-            await UnitOfWork.SaveChanges();
+            _db.Add(ticket);
+            await _db.SaveChangesAsync();
             await _bonusService.ApplyBonuses(ticket);
         }
 

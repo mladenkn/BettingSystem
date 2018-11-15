@@ -6,7 +6,7 @@ namespace Utilities
 {
     public static class CollectionUtils
     {
-        public static double Product(this IEnumerable<double> numbers) => numbers.Aggregate(1.0, (x, y) => x * y);
+        public static decimal Product(this IEnumerable<decimal> numbers) => numbers.Aggregate(1m, (x, y) => x * y);
 
         public static List<T> Generate<T>(Func<T> generateOne, int count)
         {

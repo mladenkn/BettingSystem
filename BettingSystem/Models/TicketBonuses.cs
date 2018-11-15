@@ -9,19 +9,19 @@ namespace BetingSystem.Models
 
     public interface IQuotaIncreasingBonus : ITicketBonus
     {
-        double IncreasesQuotaBy { get; set; }
+        decimal IncreasesQuotaBy { get; set; }
     }
 
     public class VariousSportsBonus : IQuotaIncreasingBonus
     {
         public int RequiredNumberOfDifferentSports { get; set; }
-        public double IncreasesQuotaBy { get; set; }
+        public decimal IncreasesQuotaBy { get; set; }
         public string Name { get; set; }
     }
 
     public class AllSportsBonus : IQuotaIncreasingBonus
     {
-        public double IncreasesQuotaBy { get; set; }
+        public decimal IncreasesQuotaBy { get; set; }
         public string Name { get; set; }
     }
 

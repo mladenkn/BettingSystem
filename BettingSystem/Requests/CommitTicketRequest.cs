@@ -5,7 +5,7 @@ namespace BetingSystem.Requests
 {
     public class CommitTicketRequest
     {
-        public double Stake { get; set; }
+        public decimal Stake { get; set; }
         public IReadOnlyCollection<BetingPair> BetingPairs { get; set; }
 
         public class BetingPair

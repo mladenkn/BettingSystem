@@ -4,7 +4,7 @@ namespace BetingSystem.Tests
 {
     public class DataFactory
     {
-        public BetablePair BetablePair(double team1WinQuota, double team2WinQuota, double drawQuota, Team team1, Team team2)
+        public BetablePair BetablePair(decimal team1WinQuota, decimal team2WinQuota, decimal drawQuota, Team team1, Team team2)
         {
             return new BetablePair
             {

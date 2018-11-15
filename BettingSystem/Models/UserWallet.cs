@@ -13,7 +13,7 @@ namespace BetingSystem.Models
 
         public string Currency { get; set; }
 
-        public double MoneyAmmount { get; set; }
+        public decimal MoneyAmmount { get; set; }
 
         public IReadOnlyCollection<WalletTransaction> Transactions { get; set; }
     }
@@ -22,7 +22,7 @@ namespace BetingSystem.Models
     {
         public int Id { get; set; }
         public int WalletId { get; set; }
-        public double MoneyInvolved { get; set; } // negative if money is subtracted
+        public decimal MoneyInvolved { get; set; } // negative if money is subtracted
         public WalletTransactionType Type { get; set; }
 
         public enum WalletTransactionType

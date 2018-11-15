@@ -11,9 +11,9 @@ namespace BetingSystem.Models
 
         public IReadOnlyCollection<BetedPair> BetedPairs { get; set; }
 
-        public double Quota { get; set; }
+        public decimal Quota { get; set; }
 
-        public double Stake { get; set; }
+        public decimal Stake { get; set; }
 
         public IReadOnlyCollection<AppliedBonus> Bonuses { get; set; }
     }

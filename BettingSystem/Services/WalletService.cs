@@ -6,7 +6,7 @@ namespace BetingSystem.Services
 {
     public interface IWalletService
     {
-        Task SubtractMoney(double moneyAmmount, WalletTransaction.WalletTransactionType type);
+        Task SubtractMoney(decimal moneyAmmount, WalletTransaction.WalletTransactionType type);
     }
 
     public class WalletService : IWalletService
@@ -20,7 +20,7 @@ namespace BetingSystem.Services
             _userAccessor = userAccessor;
         }
 
-        public async Task SubtractMoney(double moneyAmmount, WalletTransaction.WalletTransactionType type)
+        public async Task SubtractMoney(decimal moneyAmmount, WalletTransaction.WalletTransactionType type)
         {
             var userId = _userAccessor.Id();
             var wallet = await _db.Set<UserWallet>().FirstAsync(w => w.UserId == userId);

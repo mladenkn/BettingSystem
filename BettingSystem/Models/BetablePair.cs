@@ -10,8 +10,8 @@
         public int Team2Id { get; set; }
         public Team Team2 { get; set; }
 
-        public double Team1WinQuota { get; set; }
-        public double Team2WinQuota { get; set; }
-        public double DrawQuota { get; set; }
+        public decimal Team1WinQuota { get; set; }
+        public decimal Team2WinQuota { get; set; }
+        public decimal DrawQuota { get; set; }
     }
 }

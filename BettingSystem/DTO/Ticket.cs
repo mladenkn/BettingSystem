@@ -6,8 +6,8 @@ namespace BetingSystem.DTO
     public class TicketDto
     {
         public int Id { get; set; }
-        public double Stake { get; set; }
-        public double Quota { get; set; }
+        public decimal Stake { get; set; }
+        public decimal Quota { get; set; }
         public IReadOnlyCollection<Pair> Pairs { get; set; }
 
         public class Pair

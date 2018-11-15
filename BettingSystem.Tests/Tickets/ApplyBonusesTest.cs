@@ -23,6 +23,8 @@ namespace BetingSystem.Tests.Tickets
 
             var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3, Name = "a"};
             IEnumerable<ITicketBonus> allBonues = new[] {variousSporstsBonus};
+            var bonusRepo = new Mock<ITicketBonusRepository>();
+            bonusRepo.Setup(r => r.GetAll()).Returns(Task.FromResult(allBonues));
 
             var sportId = 1;
             var betedPairs = CollectionUtils.Generate(() => data.BetedPair(sportId++), 3);
@@ -32,7 +34,7 @@ namespace BetingSystem.Tests.Tickets
             db.Add(ticket);
             await db.SaveChangesAsync();
 
-            var bonusService = new BonusService(new BonusApplier(() => Task.FromResult(allBonues), db), db);
+            var bonusService = new BonusService(new BonusApplier(bonusRepo.Object, db), db);
 
             await bonusService.ApplyBonuses(ticket);
 

@@ -57,16 +57,16 @@ namespace BetingSystem.Services
 
     public class BonusApplier : IBonusApplier
     {
-        private readonly GetAllTicketBonuses _getAllTicketBonuses;
+        private readonly ITicketBonusRepository _bonusRepository;
         private readonly DbContext _db;
         private Ticket _ticket;
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
 
-        public BonusApplier(GetAllTicketBonuses getAllTicketBonuses, DbContext db)
+        public BonusApplier(ITicketBonusRepository bonusRepository, DbContext db)
         {
-            _getAllTicketBonuses = getAllTicketBonuses;
+            _bonusRepository = bonusRepository;
             _db = db;
         }
 
@@ -99,7 +99,7 @@ namespace BetingSystem.Services
 
         public async Task Apply()
         {
-            var allBonuses = await _getAllTicketBonuses();
+            var allBonuses = await _bonusRepository.GetAll();
 
             foreach (var bonus in allBonuses)
             {

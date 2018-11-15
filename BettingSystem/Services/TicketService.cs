@@ -69,9 +69,17 @@ namespace BetingSystem.Services
             });
         }
 
-        public Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId)
+        public async Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId)
         {
-            throw new NotImplementedException();
+            var tickets = await _db.Set<Ticket>()
+                .Include(t => t.BetedPairs)
+                    .ThenInclude(t => t.BetablePair)
+                        .ThenInclude(p => p.Team1)
+                .Include(t => t.BetedPairs)
+                    .ThenInclude(t => t.BetablePair)
+                        .ThenInclude(p => p.Team2)
+                .ToListAsync();
+            return tickets;
         }
     }
 }

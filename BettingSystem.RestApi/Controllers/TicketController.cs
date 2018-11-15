@@ -19,15 +19,8 @@ namespace BetingSystem.RestApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] CommitTicketRequest request)
-        {
-            var userId = ""; // TODO
-            await _ticketService.Handle(request);
-        }
+        public Task Post([FromBody] CommitTicketRequest request) => _ticketService.Handle(request);
 
-        public Task<IReadOnlyCollection<TicketDto>> Get(string userId)
-        {
-            return _ticketService.GetUsersTickets(userId);
-        }
+        public Task<IReadOnlyCollection<TicketDto>> Get(string userId) => _ticketService.GetUsersTickets(userId);
     }
 }

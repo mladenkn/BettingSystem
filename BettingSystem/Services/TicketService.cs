@@ -11,7 +11,7 @@ namespace BetingSystem.Services
 {
     public interface ITicketService
     {
-        Task Handle(CommitTicketRequest request, string userId);
+        Task Handle(CommitTicketRequest request);
         Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId);
     }
 
@@ -19,14 +19,18 @@ namespace BetingSystem.Services
     {
         private readonly IBonusService _bonusService;
         private readonly DbContext _db;
+        private readonly IWalletService _walletService;
+        private readonly ICurrentUserAccessor _currentUser;
 
-        public TicketService(IBonusService bonusService, DbContext db)
+        public TicketService(IBonusService bonusService, DbContext db, IWalletService walletService, ICurrentUserAccessor currentUser)
         {
             _bonusService = bonusService;
             _db = db;
+            _walletService = walletService;
+            _currentUser = currentUser;
         }
 
-        public async Task Handle(CommitTicketRequest request, string userId)
+        public async Task Handle(CommitTicketRequest request)
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
@@ -42,12 +46,13 @@ namespace BetingSystem.Services
             {
                 BetedPairs = betedPairs,
                 Stake = request.Stake,
-                UserId = userId
+                UserId = _currentUser.Id()
             };
 
             CalculateQuota(ticket);
             _db.Add(ticket);
             await _db.SaveChangesAsync();
+            await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             await _bonusService.ApplyBonuses(ticket);
         }
 

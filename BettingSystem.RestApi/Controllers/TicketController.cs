@@ -20,7 +20,7 @@ namespace BetingSystem.RestApi.Controllers
         public async Task Post([FromBody] CommitTicketRequest request)
         {
             var userId = ""; // TODO
-            await _ticketService.Handle(request, userId);
+            await _ticketService.Handle(request);
         }
     }
 }

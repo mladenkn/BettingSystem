@@ -22,7 +22,7 @@ namespace BetingSystem.Models
     {
         public int Id { get; set; }
         public int WalletId { get; set; }
-        public double MoneyInvolved { get; set; }
+        public double MoneyInvolved { get; set; } // negative if money is subtracted
         public WalletTransactionType Type { get; set; }
 
         public enum WalletTransactionType

@@ -1,6 +1,7 @@
 ﻿using System;
 using BetingSystem.DAL;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace BetingSystem.Tests
 {
@@ -12,6 +13,13 @@ namespace BetingSystem.Tests
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
             return new BetingSystemDbContext(options);
+        }
+
+        public static ICurrentUserAccessor CureCurrentUserAccessor(string userId)
+        {
+            var mock = new Mock<ICurrentUserAccessor>();
+            mock.Setup(a => a.Id()).Returns(() => userId);
+            return mock.Object;
         }
     }
 }

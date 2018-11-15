@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BetingSystem.DAL;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Utilities;
@@ -14,13 +13,15 @@ namespace BetingSystem.Services
         Task ApplyBonuses(Ticket ticket);
     }
 
-    public class BonusService : AbstractService, IBonusService
+    public class BonusService : IBonusService
     {
         private readonly IBonusApplier _bonusApplier;
+        private readonly DbContext _db;
 
-        public BonusService(IUnitOfWork unitOfWork, IBonusApplier bonusApplier) : base(unitOfWork)
+        public BonusService(IBonusApplier bonusApplier, DbContext db)
         {
             _bonusApplier = bonusApplier;
+            _db = db;
         }
 
         public async Task ApplyBonuses(Ticket ticket)
@@ -36,7 +37,7 @@ namespace BetingSystem.Services
                 .VerifyForBonus<VariousSportsBonus>(b => numberOfSportsOnTicket >= b.RequiredNumberOfDifferentSports)
                 .VerifyForBonus<AllSportsBonus>(async b =>
                 {
-                    var numberOfSports = await UnitOfWork.Sports.GenericQuery().Select(s => s.Id).Distinct().CountAsync();
+                    var numberOfSports = await _db.Set<Sport>().Select(s => s.Id).Distinct().CountAsync();
                     return numberOfSportsOnTicket >= numberOfSports;
                 })
                 .Apply();
@@ -56,7 +57,6 @@ namespace BetingSystem.Services
 
     public class BonusApplier : IBonusApplier
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly GetAllTicketBonuses _getAllTicketBonuses;
         private readonly DbContext _db;
         private Ticket _ticket;
@@ -64,9 +64,8 @@ namespace BetingSystem.Services
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
 
-        public BonusApplier(IUnitOfWork unitOfWork, GetAllTicketBonuses getAllTicketBonuses, DbContext db)
+        public BonusApplier(GetAllTicketBonuses getAllTicketBonuses, DbContext db)
         {
-            _unitOfWork = unitOfWork;
             _getAllTicketBonuses = getAllTicketBonuses;
             _db = db;
         }

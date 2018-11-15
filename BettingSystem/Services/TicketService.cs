@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApplicationKernel;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +15,12 @@ namespace BetingSystem.Services
         Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId);
     }
 
-    public class TicketService : AbstractService, ITicketService
+    public class TicketService : ITicketService
     {
         private readonly IBonusService _bonusService;
         private readonly DbContext _db;
 
-        public TicketService(DAL.IUnitOfWork unitOfWork, IBonusService bonusService, DbContext db) : base(unitOfWork)
+        public TicketService(IBonusService bonusService, DbContext db)
         {
             _bonusService = bonusService;
             _db = db;
@@ -31,7 +30,7 @@ namespace BetingSystem.Services
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
-            var betablePairs = await UnitOfWork.BetablePairs.GenericQuery()
+            var betablePairs = await _db.Set<BetablePair>()
                 .Include(p => p.Team1)
                 .Include(p => p.Team2)
                 .Where(p => pairsToBetIds.Contains(p.Id))

@@ -59,10 +59,10 @@ namespace BetingSystem.Tests.Tickets
 
             db.SaveChanges();
 
-            var service = new TicketService(new UnitOfWork(db), Mock.Of<IBonusService>(), db);
+            var service = new TicketService(Mock.Of<IBonusService>(), db);
             await service.Handle(request, userId);
 
-            var commitedTicket = db.Tickets.First();
+            var commitedTicket = db.Tickets.Single();
             commitedTicket.Should().NotBeNull();
 
             var betedPairs = db.BetedPairs.ToList();

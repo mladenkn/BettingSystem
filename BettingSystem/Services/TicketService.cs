@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BetingSystem.DTO;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace BetingSystem.Services
     public interface ITicketService
     {
         Task Handle(CommitTicketRequest request);
-        Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId);
+        Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);
     }
 
     public class TicketService : ITicketService
@@ -21,13 +22,20 @@ namespace BetingSystem.Services
         private readonly DbContext _db;
         private readonly IWalletService _walletService;
         private readonly ICurrentUserAccessor _currentUser;
+        private readonly IDataProvider _dataProvider;
 
-        public TicketService(IBonusService bonusService, DbContext db, IWalletService walletService, ICurrentUserAccessor currentUser)
+        public TicketService(
+            IBonusService bonusService, 
+            DbContext db,
+            IWalletService walletService,
+            ICurrentUserAccessor currentUser,
+            IDataProvider dataProvider)
         {
             _bonusService = bonusService;
             _db = db;
             _walletService = walletService;
             _currentUser = currentUser;
+            _dataProvider = dataProvider;
         }
 
         public async Task Handle(CommitTicketRequest request)
@@ -74,17 +82,6 @@ namespace BetingSystem.Services
             });
         }
 
-        public async Task<IReadOnlyCollection<Ticket>> GetUsersTickets(string userId)
-        {
-            var tickets = await _db.Set<Ticket>()
-                .Include(t => t.BetedPairs)
-                    .ThenInclude(t => t.BetablePair)
-                        .ThenInclude(p => p.Team1)
-                .Include(t => t.BetedPairs)
-                    .ThenInclude(t => t.BetablePair)
-                        .ThenInclude(p => p.Team2)
-                .ToListAsync();
-            return tickets;
-        }
+        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId) => _dataProvider.GetUsersTickets(userId);
     }
 }

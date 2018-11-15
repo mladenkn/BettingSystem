@@ -13,6 +13,6 @@ namespace BetingSystem
 
     public interface IDataProvider
     {
-        Task<IEnumerable<TicketDto>> GetUsersTickets(string userId);
+        Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);
     }
 }

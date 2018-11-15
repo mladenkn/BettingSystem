@@ -22,7 +22,7 @@ namespace BetingSystem.DAL
 
         public async Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId)
         {
-            // Should probably maybe SQL here, or keep in document store DB
+            // Should maybe SQL here, or keep in document store DB
 
             var tickets = await _db.Set<Ticket>()
                 .Include(t => t.BetedPairs)

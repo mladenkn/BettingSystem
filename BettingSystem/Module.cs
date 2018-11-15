@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using BetingSystem.Services;
 
 namespace BetingSystem
@@ -13,7 +8,9 @@ namespace BetingSystem
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<BonusService>().As<IBonusService>();
-            builder.RegisterType<IBonusApplier>().As<IBonusApplier>();
+            builder.RegisterType<BonusApplier>().As<IBonusApplier>();
+            builder.RegisterType<TicketService>().As<ITicketService>();
+            builder.RegisterType<WalletService>().As<IWalletService>();
         }
     }
 }

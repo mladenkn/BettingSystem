@@ -13,6 +13,7 @@ namespace BetingSystem.RestApi
             builder.Populate(services);
             builder.RegisterModule<Module>();
             builder.RegisterModule<DAL.Module>();
+            builder.RegisterModule<DevelopmentUtilities.Module>();
             return builder.Build();
         }
     }

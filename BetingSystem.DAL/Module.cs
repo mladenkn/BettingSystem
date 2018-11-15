@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.DAL
@@ -12,7 +7,6 @@ namespace BetingSystem.DAL
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<BetingSystemDbContext>().As<DbContext>();
             builder.RegisterType<TicketBonusRepository>().As<ITicketBonusRepository>();
         }
     }

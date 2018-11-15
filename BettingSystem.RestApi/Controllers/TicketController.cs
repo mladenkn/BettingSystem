@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BetingSystem.DTO;
 using BetingSystem.Requests;
@@ -19,8 +20,21 @@ namespace BetingSystem.RestApi.Controllers
         }
 
         [HttpPost]
-        public Task Post([FromBody] CommitTicketRequest request) => _ticketService.Handle(request);
+        public async Task<IActionResult> Post([FromBody] CommitTicketRequest request)
+        {
+            try
+            {
+                await _ticketService.Handle(request);
+            }
+            catch (BetablePairsNotFound e)
+            {
+                var message = $"Pairs with the ids: {e.NotFoundPairsIds} have not been found";
+                return BadRequest(message);
+            }
+            return Ok();
+        }
 
-        public Task<IReadOnlyCollection<TicketDto>> Get(string userId) => _ticketService.GetUsersTickets(userId);
+        [HttpGet]
+        public Task<IReadOnlyCollection<TicketDto>> Get() => _ticketService.GetUsersTickets();
     }
 }

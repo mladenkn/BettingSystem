@@ -13,7 +13,7 @@ namespace BetingSystem.Services
     public interface ITicketService
     {
         Task Handle(CommitTicketRequest request);
-        Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);
+        Task<IReadOnlyCollection<TicketDto>> GetUsersTickets();
     }
 
     public class TicketService : ITicketService
@@ -47,6 +47,13 @@ namespace BetingSystem.Services
                 .Include(p => p.Team2)
                 .Where(p => pairsToBetIds.Contains(p.Id))
                 .ToArrayAsync();
+
+            if (request.BetingPairs.Count != betablePairs.Length)
+            {
+                var betablePairsIds = betablePairs.Select(p => p.Id);
+                var difference = pairsToBetIds.Except(betablePairsIds);
+                throw new BetablePairsNotFound(difference);
+            }
 
             var betedPairs = CreateBetedPairs(request, betablePairs).ToList();
 
@@ -82,6 +89,6 @@ namespace BetingSystem.Services
             });
         }
 
-        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId) => _dataProvider.GetUsersTickets(userId);
+        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets() => _dataProvider.GetUsersTickets(_currentUser.Id());
     }
 }

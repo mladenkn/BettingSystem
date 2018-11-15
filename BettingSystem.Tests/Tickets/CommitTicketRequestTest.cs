@@ -60,7 +60,7 @@ namespace BetingSystem.Tests.Tickets
             db.SaveChanges();
 
             var currentUserAccessor = TestServicesFactory.CureCurrentUserAccessor(userId);
-            var service = new TicketService(Mock.Of<IBonusService>(), db, Mock.Of<IWalletService>(), currentUserAccessor);
+            var service = new TicketService(Mock.Of<IBonusService>(), db, Mock.Of<IWalletService>(), currentUserAccessor, null);
             await service.Handle(request);
 
             var commitedTicket = db.Tickets.Single();

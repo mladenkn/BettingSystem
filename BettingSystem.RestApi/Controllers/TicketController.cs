@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BetingSystem.DTO;
 using BetingSystem.Requests;
 using BetingSystem.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,11 @@ namespace BetingSystem.RestApi.Controllers
         {
             var userId = ""; // TODO
             await _ticketService.Handle(request);
+        }
+
+        public Task<IReadOnlyCollection<TicketDto>> Get(string userId)
+        {
+            return _ticketService.GetUsersTickets(userId);
         }
     }
 }

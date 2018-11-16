@@ -53,11 +53,6 @@ namespace BetingSystem.Services
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
     }
 
-    public interface ITicketBonusesAccessor
-    {
-        TicketBonuses Value { get; set; }
-    }
-
     public class BonusApplier : IBonusApplier
     {
         private readonly DbContext _db;
@@ -65,11 +60,11 @@ namespace BetingSystem.Services
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
-        private readonly TicketBonuses _bonuses;
+        private readonly ITicketBonusesRepository _bonusesRepo;
 
-        public BonusApplier(ITicketBonusesAccessor ticketBonusesAccessor, DbContext db)
+        public BonusApplier(ITicketBonusesRepository bonusesRepo, DbContext db)
         {
-            _bonuses = ticketBonusesAccessor.Value;
+            _bonusesRepo = bonusesRepo;
             _db = db;
         }
 
@@ -102,7 +97,7 @@ namespace BetingSystem.Services
 
         public async Task Apply()
         {
-            var activeBonuses = _bonuses.All.Where(b => b.IsActive);
+            var activeBonuses = await _bonusesRepo.AllActive();
 
             foreach (var bonus in activeBonuses)
             {

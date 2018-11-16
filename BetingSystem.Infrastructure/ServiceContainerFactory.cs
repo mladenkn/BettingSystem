@@ -16,7 +16,7 @@ namespace BetingSystem.Infrastructure
             builder.RegisterModule<DAL.Module>();
             builder.RegisterModule<DevelopmentUtilities.Module>();
 
-            builder.RegisterType<TicketBonusesAccessor>().As<ITicketBonusesAccessor>().InstancePerLifetimeScope();
+            builder.RegisterType<TicketBonusesRepository>().As<ITicketBonusesRepository>().SingleInstance();
 
             return builder.Build();
         }

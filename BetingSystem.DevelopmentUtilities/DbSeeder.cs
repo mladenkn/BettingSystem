@@ -8,12 +8,8 @@ namespace BetingSystem.DevelopmentUtilities
 {
     public static class DbSeeder
     {
-        public static async Task Seed(DbContext db, TicketBonuses bonuses)
+        public static async Task Seed(DbContext db, ITicketBonusesRepository bonusesRepo)
         {
-            bonuses.VariousSportsBonus.IncreasesQuotaBy = 2;
-            bonuses.VariousSportsBonus.RequiredNumberOfDifferentSports = 3;
-            bonuses.VariousSportsBonus.IsActive = true;
-
             var ticketId = 1;
 
             var ticket = new Ticket

@@ -30,11 +30,4 @@ namespace BetingSystem.Models
         public int TicketId { get; set; }
         public string BonusName { get; set; }
     }
-
-    public class TicketBonuses
-    {
-        public VariousSportsBonus VariousSportsBonus { get; set; }
-        public AllSportsBonus AllSportsBonus { get; set; }
-        public IEnumerable<ITicketBonus> All => new ITicketBonus[] {VariousSportsBonus, AllSportsBonus};
-    }
 }

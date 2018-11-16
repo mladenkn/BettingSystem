@@ -16,8 +16,8 @@ namespace BetingSystem.RestApi
             using (var scope = host.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<DbContext>();
-                var bonusesAccessor = scope.ServiceProvider.GetService<ITicketBonusesAccessor>();
-                await DbSeeder.Seed(db, bonusesAccessor.Value);
+                var bonusesAccessor = scope.ServiceProvider.GetService<ITicketBonusesRepository>();
+                await DbSeeder.Seed(db, bonusesAccessor);
             }
             host.Run();
         }

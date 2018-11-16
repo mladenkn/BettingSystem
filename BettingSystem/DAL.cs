@@ -9,4 +9,9 @@ namespace BetingSystem
     {
         Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);
     }
+
+    public interface ITicketBonusesRepository
+    {
+        Task<IEnumerable<ITicketBonus>> AllActive();
+    }
 }

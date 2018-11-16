@@ -1,1 +1,10 @@
-{"VariousSportsBonus":{"RequiredNumberOfDifferentSports":4,"IncreasesQuotaBy":2.0,"IsActive":true},"AllSportsBonus":{"IncreasesQuotaBy":0.0,"IsActive":false},"All":[{"RequiredNumberOfDifferentSports":4,"IncreasesQuotaBy":2.0,"IsActive":true},{"IncreasesQuotaBy":0.0,"IsActive":false}]}
+{
+  "VariousSportsBonus": {
+    "RequiredNumberOfDifferentSports": 4,
+    "IncreasesQuotaBy": 2.0,
+    "IsActive": true
+  },
+  "AllSportsBonus": {
+    "IsActive": false
+  }
+}

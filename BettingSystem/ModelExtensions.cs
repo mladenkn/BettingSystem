@@ -3,7 +3,7 @@ using BetingSystem.Models;
 
 namespace BetingSystem
 {
-    public static class ModelExtension
+    public static class ModelExtensions
     {
         public static decimal QuotaForType(this BetablePair pair, BetingType type)
         {
@@ -17,5 +17,7 @@ namespace BetingSystem
         }
 
         public static decimal Quota(this BetedPair pair) => pair.BetablePair.QuotaForType(pair.BetedType);
+
+        public static string Name(this ITicketBonus bonus) => bonus.GetType().FullName;
     }
 }

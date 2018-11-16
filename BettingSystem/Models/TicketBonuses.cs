@@ -4,7 +4,6 @@ namespace BetingSystem.Models
 {
     public interface ITicketBonus
     {
-        string Name { get; set; }
     }
 
     public interface IQuotaIncreasingBonus : ITicketBonus
@@ -16,13 +15,11 @@ namespace BetingSystem.Models
     {
         public int RequiredNumberOfDifferentSports { get; set; }
         public decimal IncreasesQuotaBy { get; set; }
-        public string Name { get; set; }
     }
 
     public class AllSportsBonus : IQuotaIncreasingBonus
     {
         public decimal IncreasesQuotaBy { get; set; }
-        public string Name { get; set; }
     }
 
     public class AppliedBonus

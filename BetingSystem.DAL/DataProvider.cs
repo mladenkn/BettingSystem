@@ -25,6 +25,7 @@ namespace BetingSystem.DAL
             // Should maybe write SQL here, or keep tickets in document store DB
 
             var tickets = await _db.Set<Ticket>()
+                .Where(t => t.UserId == userId)
                 .Include(t => t.BetedPairs)
                     .ThenInclude(t => t.BetablePair)
                         .ThenInclude(p => p.Team1)
@@ -33,6 +34,7 @@ namespace BetingSystem.DAL
                          .ThenInclude(p => p.Team2)
                 .ProjectTo<TicketDto>()
                 .ToListAsync();
+
             return tickets;
         }
     }

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace BetingSystem.Models
+﻿namespace BetingSystem.Models
 {
     public interface ITicketBonus
     {
+        bool IsActive { get; }
     }
 
     public interface IQuotaIncreasingBonus : ITicketBonus
@@ -15,11 +14,13 @@ namespace BetingSystem.Models
     {
         public int RequiredNumberOfDifferentSports { get; set; }
         public decimal IncreasesQuotaBy { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class AllSportsBonus : IQuotaIncreasingBonus
     {
         public decimal IncreasesQuotaBy { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class AppliedBonus

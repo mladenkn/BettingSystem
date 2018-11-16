@@ -30,5 +30,5 @@ namespace BetingSystem.Models
         public BetingType BetedType { get; set; }
     }
 
-    public enum BetingType { Team1Win, Team2Win, Draw }
+    public enum BetingType { Team1Win = 1, Team2Win = 2, Draw = 3 }
 }

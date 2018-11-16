@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using BetingSystem.DAL;
 using BetingSystem.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +27,7 @@ namespace BetingSystem.RestApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAutoMapper(typeof(MapperProfile).Assembly);
             services.AddDbContext<BetingSystemDbContext>(c => c.UseInMemoryDatabase("test-db"));
             services.AddScoped<DbContext, BetingSystemDbContext>();
 

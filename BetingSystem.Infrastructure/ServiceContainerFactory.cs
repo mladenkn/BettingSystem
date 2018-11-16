@@ -1,7 +1,5 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using BetingSystem.DAL;
 using BetingSystem.Services;
 using Microsoft.Extensions.DependencyInjection;
 

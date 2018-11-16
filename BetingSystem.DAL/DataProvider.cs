@@ -14,10 +14,12 @@ namespace BetingSystem.DAL
     public class DataProvider : IDataProvider
     {
         private readonly BetingSystemDbContext _db;
+        private readonly IConfigurationProvider _mapperConfig;
 
-        public DataProvider(BetingSystemDbContext db)
+        public DataProvider(BetingSystemDbContext db, IConfigurationProvider mapperConfig)
         {
             _db = db;
+            _mapperConfig = mapperConfig;
         }
 
         public async Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId)
@@ -32,8 +34,8 @@ namespace BetingSystem.DAL
                 .Include(t => t.BetedPairs)
                     .ThenInclude(t => t.BetablePair)
                          .ThenInclude(p => p.Team2)
-                .ProjectTo<TicketDto>()
-                .ToListAsync();
+                .ProjectTo<TicketDto>(_mapperConfig)
+                .ToArrayAsync();
 
             return tickets;
         }

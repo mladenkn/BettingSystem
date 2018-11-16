@@ -12,4 +12,14 @@ namespace BetingSystem
 
         public IEnumerable<int> NotFoundPairsIds { get; }
     }
+
+    public class ModelNotFound : ApplicationException
+    {
+        public ModelNotFound(Type modelType) : base($"Model of type {modelType} with the id of has not been found.")
+        {
+            WantedObjectType = modelType;
+        }
+
+        public Type WantedObjectType { get; }
+    }
 }

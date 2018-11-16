@@ -10,43 +10,56 @@ namespace BetingSystem.DevelopmentUtilities
     {
         public static async Task Seed(DbContext db, ITicketBonusesRepository bonusesRepo)
         {
-            var ticketId = 1;
+            var user = new User {UserId = "mladen"};
+            var wallet = new UserWallet {Currency = "HRK", MoneyAmmount = 500, UserId = user.UserId};
+
+            db.AddRange(user, wallet);
+
+            var hajduk = NewFootballTeam("Hajduk");
+            var dinamo = NewFootballTeam("Dinamo");
+            var barca = NewFootballTeam("Barcelona");
+            var arsenal = NewFootballTeam("Arsenal");
+
+            db.AddRange(hajduk, dinamo, barca, arsenal);
+
+            var hajdukVsDinamo = new BetablePair
+            {
+                Id = 1,
+                Team1 = hajduk,
+                Team2 = dinamo,
+                Team1WinQuota = 2,
+                Team2WinQuota = 3,
+                DrawQuota = 2.5m
+            };
+
+            var barcaVsArsenal = new BetablePair
+            {
+                Id = 2,
+                Team1 = barca,
+                Team2 = arsenal,
+                Team1WinQuota = 2,
+                Team2WinQuota = 3.1m,
+                DrawQuota = 2.4m
+            };
+
+            db.AddRange(hajdukVsDinamo, barcaVsArsenal);
 
             var ticket = new Ticket
             {
-                Id = ticketId,
-                UserId = "mladen",
-                BetedPairs = new[]
+                UserId = user.UserId,
+                BetedPairs = new []
                 {
                     new BetedPair
                     {
-                        TicketId = ticketId,
-                        BetablePairId = 1,
-                        BetablePair = new BetablePair
-                        {
-                            Id = 1,
-                            Team1 = NewTeam("Hajduk", "Nogomet"),
-                            Team2 = NewTeam("Barcelona", "Nogomet"),
-                            Team1WinQuota = 5,
-                            Team2WinQuota = 2,
-                            DrawQuota = 2.5m
-                        },
-                        BetedType = BetingType.Team1Win,
+                        BetablePair = hajdukVsDinamo,
+                        BetablePairId = hajdukVsDinamo.Id,
+                        BetedType = BetingType.Draw,
                     },
                     new BetedPair
                     {
-                        TicketId = ticketId,
-                        BetablePairId = 2,
-                        BetablePair = new BetablePair
-                        {
-                            Id = 2,
-                            Team1 = NewTeam("Dinamo", "Nogomet"),
-                            Team2 = NewTeam("Arsenal", "Nogomet"),
-                            Team1WinQuota = 4.8m,
-                            Team2WinQuota = 2.1m,
-                            DrawQuota = 2.5m
-                        },
-                        BetedType = BetingType.Draw,
+                        BetablePair = barcaVsArsenal,
+                        BetablePairId = barcaVsArsenal.Id,
+                        BetedType = BetingType.Team1Win,
                     }
                 }
             };
@@ -54,18 +67,16 @@ namespace BetingSystem.DevelopmentUtilities
             ticket.Quota = ticket.BetedPairs.Select(p => p.Quota()).Product();
 
             db.Add(ticket);
-            db.AddRange(ticket.BetedPairs.Select(p => p.BetablePair));
-            db.AddRange(ticket.BetedPairs);
 
             await db.SaveChangesAsync();
         }
 
-        public static Team NewTeam(string name, string sportName)
+        public static Team NewFootballTeam(string name)
         {
             return new Team
             {
                 Name = name,
-                Sport = new Sport { Name = sportName }
+                Sport = new Sport { Name = "Football" }
             };
         }
     }

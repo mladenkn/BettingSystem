@@ -23,7 +23,10 @@ namespace BetingSystem.Services
         public async Task SubtractMoney(decimal moneyAmmount, WalletTransaction.WalletTransactionType type)
         {
             var userId = _userAccessor.Id();
-            var wallet = await _db.Set<UserWallet>().FirstAsync(w => w.UserId == userId);
+            var wallet = await _db.Set<UserWallet>().FirstOrDefaultAsync(w => w.UserId == userId);
+
+            if (wallet == null)
+                throw new ModelNotFound(typeof(UserWallet));
 
             var transaction = new WalletTransaction
             {

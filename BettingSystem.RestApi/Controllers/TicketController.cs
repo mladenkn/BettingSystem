@@ -31,6 +31,11 @@ namespace BetingSystem.RestApi.Controllers
                 var message = $"Pairs with the ids: {e.NotFoundPairsIds} have not been found";
                 return BadRequest(message);
             }
+            catch (ModelNotFound e)
+            {
+                return NotFound(e.Message);
+            }
+
             return Ok();
         }
 

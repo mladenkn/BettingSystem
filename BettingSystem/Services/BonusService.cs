@@ -53,20 +53,23 @@ namespace BetingSystem.Services
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
     }
 
-    public delegate Task<IEnumerable<ITicketBonus>> GetAllTicketBonuses();
+    public interface ITicketBonusesAccessor
+    {
+        TicketBonuses Value { get; set; }
+    }
 
     public class BonusApplier : IBonusApplier
     {
-        private readonly ITicketBonusRepository _bonusRepository;
         private readonly DbContext _db;
         private Ticket _ticket;
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
+        private readonly TicketBonuses _bonuses;
 
-        public BonusApplier(ITicketBonusRepository bonusRepository, DbContext db)
+        public BonusApplier(ITicketBonusesAccessor ticketBonusesAccessor, DbContext db)
         {
-            _bonusRepository = bonusRepository;
+            _bonuses = ticketBonusesAccessor.Value;
             _db = db;
         }
 
@@ -99,9 +102,9 @@ namespace BetingSystem.Services
 
         public async Task Apply()
         {
-            var allBonuses = await _bonusRepository.GetAll();
+            var activeBonuses = _bonuses.All.Where(b => b.IsActive);
 
-            foreach (var bonus in allBonuses)
+            foreach (var bonus in activeBonuses)
             {
                 var shouldGrant = _verifyers[bonus.GetType()];
                 if (await shouldGrant(bonus))

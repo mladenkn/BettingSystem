@@ -20,11 +20,14 @@ namespace BetingSystem.Tests.Tickets
         {
             var data = new DataFactory();
             var db = TestServicesFactory.DbContext();
-
-            var variousSporstsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3, Name = "a"};
-            IEnumerable<ITicketBonus> allBonues = new[] {variousSporstsBonus};
-            var bonusRepo = new Mock<ITicketBonusRepository>();
-            bonusRepo.Setup(r => r.GetAll()).Returns(Task.FromResult(allBonues));
+            
+            var bonuses = new TicketBonuses
+            {
+                VariousSportsBonus = new VariousSportsBonus { IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3, IsActive = true },
+                AllSportsBonus = new AllSportsBonus()
+            };
+            var bonusRepo = new Mock<ITicketBonusesAccessor>();
+            bonusRepo.Setup(r => r.Value).Returns(bonuses);
 
             var sportId = 1;
             var betedPairs = CollectionUtils.Generate(() => data.BetedPair(sportId++), 3);
@@ -40,9 +43,9 @@ namespace BetingSystem.Tests.Tickets
 
             var appliedBonus = db.AppliedBonuses.Single();
             appliedBonus.TicketId.Should().Be(ticket.Id);
-            appliedBonus.BonusName.Should().Be(variousSporstsBonus.Name);
+            appliedBonus.BonusName.Should().Be(bonuses.VariousSportsBonus.Name());
 
-            ticket.Quota.Should().Be(variousSporstsBonus.IncreasesQuotaBy + quotaWithoutBonus);
+            ticket.Quota.Should().Be(bonuses.VariousSportsBonus.IncreasesQuotaBy + quotaWithoutBonus);
         }
     }
 }

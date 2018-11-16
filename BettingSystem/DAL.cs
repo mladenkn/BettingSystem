@@ -5,12 +5,6 @@ using BetingSystem.Models;
 
 namespace BetingSystem
 {
-    public interface ITicketBonusRepository
-    {
-        Task<IEnumerable<ITicketBonus>> GetAll();
-        Task Persist(ITicketBonus bonus);
-    }
-
     public interface IDataProvider
     {
         Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);

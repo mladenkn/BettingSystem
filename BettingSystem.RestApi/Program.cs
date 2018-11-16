@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BetingSystem.DevelopmentUtilities;
+using BetingSystem.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,8 @@ namespace BetingSystem.RestApi
             using (var scope = host.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<DbContext>();
-                await DbSeeder.Seed(db);
+                var bonusesAccessor = scope.ServiceProvider.GetService<ITicketBonusesAccessor>();
+                await DbSeeder.Seed(db, bonusesAccessor.Value);
             }
             host.Run();
         }

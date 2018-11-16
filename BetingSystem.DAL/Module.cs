@@ -7,7 +7,7 @@ namespace BetingSystem.DAL
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<TicketBonusRepository>().As<ITicketBonusRepository>();
+            builder.RegisterType<DataProvider>().As<IDataProvider>();
         }
     }
 }

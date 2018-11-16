@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using BetingSystem.DevelopmentUtilities;
-using BetingSystem.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

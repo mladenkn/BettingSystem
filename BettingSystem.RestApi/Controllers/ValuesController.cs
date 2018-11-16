@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BetingSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetingSystem.RestApi.Controllers

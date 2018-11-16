@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BetingSystem.DAL;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using BetingSystem.Services;
 using FluentAssertions;
 using Moq;
-using Utilities;
 using Xunit;
 
 namespace BetingSystem.Tests.Tickets

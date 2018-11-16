@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using BetingSystem.DAL;

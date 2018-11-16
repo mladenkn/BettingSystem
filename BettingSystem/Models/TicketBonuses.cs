@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BetingSystem.Models
+﻿namespace BetingSystem.Models
 {
     public interface ITicketBonus
     {

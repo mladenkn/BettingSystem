@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using BetingSystem.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetingSystem.Infrastructure

@@ -18,7 +18,5 @@ namespace Utilities
             foreach (var item in items)
                 action(item);
         }
-
-        public static IEnumerable<T> NonNulls<T>(this IEnumerable<T> items) => items.Where(i => i != null);
     }
 }

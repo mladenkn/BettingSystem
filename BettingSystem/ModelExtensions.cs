@@ -5,7 +5,7 @@ namespace BetingSystem
 {
     public static class ModelExtensions
     {
-        public static decimal QuotaForType(this BetablePair pair, BetingType type)
+        public static decimal GetQuotaForType(this BetablePair pair, BetingType type)
         {
             switch (type)
             {
@@ -16,8 +16,8 @@ namespace BetingSystem
             }
         }
 
-        public static decimal Quota(this BetedPair pair) => pair.BetablePair.QuotaForType(pair.BetedType);
+        public static decimal GetQuota(this BetedPair pair) => pair.BetablePair.GetQuotaForType(pair.BetedType);
 
-        public static string Name(this ITicketBonus bonus) => bonus.GetType().Name;
+        public static string GetName(this ITicketBonus bonus) => bonus.GetType().Name;
     }
 }

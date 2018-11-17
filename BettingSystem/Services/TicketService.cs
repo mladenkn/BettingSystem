@@ -72,7 +72,7 @@ namespace BetingSystem.Services
 
         public static void CalculateQuota(Ticket ticket)
         {
-            ticket.Quota = ticket.BetedPairs.Select(p => p.Quota()).Product();
+            ticket.Quota = ticket.BetedPairs.Select(p => p.GetQuota()).Product();
         }
 
         private static IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)

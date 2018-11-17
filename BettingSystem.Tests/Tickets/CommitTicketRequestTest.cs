@@ -70,19 +70,19 @@ namespace BetingSystem.Tests.Tickets
 
             AssertOnPair(betablePair1.Id, pair =>
             {
-                pair.Quota().Should().Be(pair1SelectedQuota);
+                pair.GetQuota().Should().Be(pair1SelectedQuota);
                 pair.BetedType.Should().Be(BetingType.Team1Win);
             });
 
             AssertOnPair(betablePair2.Id, pair =>
             {
-                pair.Quota().Should().Be(pair2SelectedQuota);
+                pair.GetQuota().Should().Be(pair2SelectedQuota);
                 pair.BetedType.Should().Be(BetingType.Team2Win);
             });
 
             AssertOnPair(betablePair3.Id, pair =>
             {
-                pair.Quota().Should().Be(pair3SelectedQuota);
+                pair.GetQuota().Should().Be(pair3SelectedQuota);
                 pair.BetedType.Should().Be(BetingType.Draw);
             });
 

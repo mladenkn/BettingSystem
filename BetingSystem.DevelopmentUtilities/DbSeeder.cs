@@ -64,7 +64,7 @@ namespace BetingSystem.DevelopmentUtilities
                 }
             };
 
-            ticket.Quota = ticket.BetedPairs.Select(p => p.Quota()).Product();
+            ticket.Quota = ticket.BetedPairs.Select(p => p.GetQuota()).Product();
 
             db.Add(ticket);
 

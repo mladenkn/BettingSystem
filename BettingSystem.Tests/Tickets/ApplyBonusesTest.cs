@@ -37,7 +37,7 @@ namespace BetingSystem.Tests.Tickets
 
             var appliedBonus = db.AppliedBonuses.Single();
             appliedBonus.TicketId.Should().Be(ticket.Id);
-            appliedBonus.BonusName.Should().Be(variousSportsBonus.Name());
+            appliedBonus.BonusName.Should().Be(variousSportsBonus.GetName());
 
             ticket.Quota.Should().Be(variousSportsBonus.IncreasesQuotaBy + quotaWithoutBonus);
         }

@@ -24,11 +24,11 @@ namespace BetingSystem.DAL
         }
 
         public Task<IEnumerable<ITicketBonus>> AllActive() => Task.FromResult(_bonuses.Where(b => b.IsActive));
-    }
 
-    public class TicketBonuses
-    {
-        public VariousSportsBonus VariousSportsBonus { get; set; }
-        public AllSportsBonus AllSportsBonus { get; set; }
+        private class TicketBonuses
+        {
+            public VariousSportsBonus VariousSportsBonus { get; set; }
+            public AllSportsBonus AllSportsBonus { get; set; }
+        }
     }
 }

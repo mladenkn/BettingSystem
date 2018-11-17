@@ -104,7 +104,7 @@ namespace BetingSystem.Services
                 var shouldGrant = _verifyers[bonus.GetType()];
                 if (await shouldGrant(bonus))
                 {
-                    _db.Add(new AppliedBonus { BonusName = bonus.Name(), TicketId = _ticket.Id });
+                    _db.Add(new AppliedBonus { BonusName = bonus.GetName(), TicketId = _ticket.Id });
                     _appliers.ForEach(a => a(bonus));
                     _db.Update(_ticket);
                     await _db.SaveChangesAsync();

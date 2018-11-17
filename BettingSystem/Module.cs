@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using BetingSystem.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem
 {

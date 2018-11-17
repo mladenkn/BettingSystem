@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BetingSystem.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace BetingSystem.Infrastructure
@@ -13,11 +11,14 @@ namespace BetingSystem.Infrastructure
     {
         private readonly List<ITicketBonus> _bonuses;
 
-        public TicketBonusesRepository(IConfiguration config, IHostingEnvironment env)
+        public class Dependecies
         {
-            var fileName = config.GetValue<string>("TicketBonusesFile");
-            var file = Path.Combine(env.ContentRootPath, fileName);
-            var json = File.ReadAllText(file);
+            public string FilePath { get; set; }
+        }
+
+        public TicketBonusesRepository(Dependecies deps)
+        {
+            var json = File.ReadAllText(deps.FilePath);
             var bonuses = JsonConvert.DeserializeObject<TicketBonuses>(json);
             _bonuses = new List<ITicketBonus> {bonuses.AllSportsBonus, bonuses.VariousSportsBonus};
         }

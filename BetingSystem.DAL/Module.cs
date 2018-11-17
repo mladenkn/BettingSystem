@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.DAL
 {
@@ -7,6 +8,7 @@ namespace BetingSystem.DAL
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<DataProvider>().As<IDataProvider>();
+            builder.Register(c => c.Resolve<BetingSystemDbContext>()).As<DbContext>();
         }
     }
 }

@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BetingSystem.DAL\BetingSystem.DAL.csproj" />
     <ProjectReference Include="..\BetingSystem.DevelopmentUtilities\BetingSystem.DevelopmentUtilities.csproj" />
-    <ProjectReference Include="..\BetingSystem.Infrastructure\BetingSystem.Infrastructure.csproj" />
     <ProjectReference Include="..\BettingSystem\BetingSystem.csproj" />
   </ItemGroup>
 

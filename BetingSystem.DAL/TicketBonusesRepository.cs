@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BetingSystem.Models;
 using Newtonsoft.Json;
 
-namespace BetingSystem.Infrastructure
+namespace BetingSystem.DAL
 {
     public class TicketBonusesRepository : ITicketBonusesRepository
     {

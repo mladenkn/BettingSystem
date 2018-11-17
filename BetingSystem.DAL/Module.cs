@@ -9,6 +9,7 @@ namespace BetingSystem.DAL
         {
             builder.RegisterType<DataProvider>().As<IDataProvider>();
             builder.Register(c => c.Resolve<BetingSystemDbContext>()).As<DbContext>();
+            builder.RegisterType<TicketBonusesRepository>().As<ITicketBonusesRepository>().SingleInstance();
         }
     }
 }

@@ -18,6 +18,6 @@ namespace BetingSystem
 
         public static decimal Quota(this BetedPair pair) => pair.BetablePair.QuotaForType(pair.BetedType);
 
-        public static string Name(this ITicketBonus bonus) => bonus.GetType().FullName;
+        public static string Name(this ITicketBonus bonus) => bonus.GetType().Name;
     }
 }

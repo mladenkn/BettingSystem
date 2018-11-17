@@ -3,14 +3,15 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using BetingSystem.DAL;
+using BetingSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BetingSystem.Infrastructure
+namespace BetingSystem.RestApi
 {
-    public static class ServiceContainerFactory
+    public static class ServiceProviderFactory
     {
-        public static AutofacServiceProvider Create(IServiceCollection services, Action<ContainerBuilder> configAdditional)
+        public static IServiceProvider Create(IServiceCollection services, Action<ContainerBuilder> configAdditional)
         {
             var builder = new ContainerBuilder();
 

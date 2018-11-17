@@ -8,7 +8,6 @@ using BetingSystem.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -36,7 +35,7 @@ namespace BetingSystem.RestApi
                 c.SwaggerDoc("v1", new Info { Title = "BetingSystem API", Version = "v1" });
             });
 
-            return ServiceContainerFactory.Create(services, c => c.Register(GetBonusesRepoDeps));
+            return ServiceProviderFactory.Create(services, c => c.Register(GetBonusesRepoDeps));
         }
 
         private TicketBonusesRepository.Dependecies GetBonusesRepoDeps(IComponentContext _)

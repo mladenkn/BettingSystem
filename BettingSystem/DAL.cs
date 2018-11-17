@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BetingSystem.DTO;
 using BetingSystem.Models;
 
 namespace BetingSystem

@@ -62,8 +62,8 @@ namespace BetingSystem.Tests.Tickets
             var commitedTicket = db.Tickets.Single();
             commitedTicket.Should().NotBeNull();
 
-            var betedPairs = db.BetedPairs.ToList();
-            betedPairs.Count.Should().Be(3);
+            var betedPairs = db.BetedPairs.ToArray();
+            betedPairs.Length.Should().Be(3);
 
             void AssertOnPair(int betablePairId, Action<BetedPair> assert) =>
                 assert(betedPairs.Single(p => p.BetablePairId == betablePairId));

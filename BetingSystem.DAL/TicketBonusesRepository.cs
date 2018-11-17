@@ -9,7 +9,7 @@ namespace BetingSystem.DAL
 {
     public class TicketBonusesRepository : ITicketBonusesRepository
     {
-        private readonly List<ITicketBonus> _bonuses;
+        private readonly IList<ITicketBonus> _bonuses;
 
         public class Dependecies
         {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BetingSystem.DTO;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +53,7 @@ namespace BetingSystem.Services
                 throw new BetablePairsNotFound(difference);
             }
 
-            var betedPairs = CreateBetedPairs(request, betablePairs).ToList();
+            var betedPairs = CreateBetedPairs(request, betablePairs).ToArray();
 
             var ticket = new Ticket
             {

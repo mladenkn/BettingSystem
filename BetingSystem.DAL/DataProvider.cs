@@ -10,11 +10,11 @@ namespace BetingSystem.DAL
 {
     public class DataProvider : IDataProvider
     {
-        private readonly BetingSystemDbContext _db;
+        private readonly DbContext _db;
         private readonly IConfigurationProvider _mapperConfig;
         private readonly ITicketBonusesRepository _ticketBonuses;
 
-        public DataProvider(BetingSystemDbContext db, IConfigurationProvider mapperConfig, ITicketBonusesRepository ticketBonuses)
+        public DataProvider(DbContext db, IConfigurationProvider mapperConfig, ITicketBonusesRepository ticketBonuses)
         {
             _db = db;
             _mapperConfig = mapperConfig;

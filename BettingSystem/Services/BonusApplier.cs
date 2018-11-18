@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BetingSystem.Models;
-using Microsoft.EntityFrameworkCore;
 using Utilities;
 
 namespace BetingSystem.Services
 {
     public interface IBonusApplier
     {
-        Task Apply();
         IBonusApplier ApplyAdditionalFor<TBonus>(Action<Ticket, TBonus> apply);
         IBonusApplier Use(Ticket ticket);
+        IBonusApplier Use(IEnumerable<ITicketBonus> bonuses);
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
+        Task<IEnumerable<AppliedBonus>> Apply();
     }
 
     public class BonusApplier : IBonusApplier
     {
-        private readonly DbContext _db;
         private Ticket _ticket;
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
-        private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
-        private readonly ITicketBonusesRepository _bonusesRepo;
-
-        public BonusApplier(ITicketBonusesRepository bonusesRepo, DbContext db)
-        {
-            _bonusesRepo = bonusesRepo;
-            _db = db;
-        }
+        private readonly ICollection<Action<Ticket, ITicketBonus>> _appliers = new List<Action<Ticket, ITicketBonus>>();
+        private IEnumerable<ITicketBonus> _bonuses;
 
         public IBonusApplier Use(Ticket ticket)
         {
             _ticket = ticket;
+            return this;
+        }
+
+        public IBonusApplier Use(IEnumerable<ITicketBonus> bonuses)
+        {
+            _bonuses = bonuses;
             return this;
         }
 
@@ -50,29 +49,27 @@ namespace BetingSystem.Services
 
         public IBonusApplier ApplyAdditionalFor<TBonusType>(Action<Ticket, TBonusType> apply)
         {
-            _appliers.Add(b =>
+            _appliers.Add((t, b) =>
             {
                 if (b is TBonusType wantedBonus)
-                    apply(_ticket, wantedBonus);
+                    apply(t, wantedBonus);
             });
             return this;
         }
 
-        public async Task Apply()
+        public async Task<IEnumerable<AppliedBonus>> Apply()
         {
-            var activeBonuses = await _bonusesRepo.AllActive();
-
-            foreach (var bonus in activeBonuses)
+            var bonuses = new List<AppliedBonus>();
+            foreach (var bonus in _bonuses)
             {
                 var shouldGrant = _verifyers[bonus.GetType()];
                 if (await shouldGrant(bonus))
                 {
-                    _db.Add(new AppliedBonus { BonusName = bonus.GetName(), TicketId = _ticket.Id });
-                    _appliers.ForEach(a => a(bonus));
-                    _db.Update(_ticket);
-                    await _db.SaveChangesAsync();
+                    bonuses.Add(new AppliedBonus { BonusName = bonus.GetName(), TicketId = _ticket.Id });
+                    _appliers.ForEach(a => a(_ticket, bonus));
                 }
             }
+            return bonuses;
         }
     }
 }

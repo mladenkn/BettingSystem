@@ -31,7 +31,7 @@ namespace BetingSystem.Tests.Tickets
             db.Add(ticket);
             await db.SaveChangesAsync();
 
-            var bonusService = new BonusService(new BonusApplier(bonusRepo.Object, db), db);
+            var bonusService = new BonusService(new BonusApplier(), db, bonusRepo.Object);
 
             await bonusService.ApplyBonuses(ticket);
 

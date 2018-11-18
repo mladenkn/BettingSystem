@@ -11,10 +11,10 @@ namespace BetingSystem.Services
 
     public class WalletService : IWalletService
     {
-        private readonly DbContext _db;
+        private readonly IDatabase _db;
         private readonly ICurrentUserAccessor _userAccessor;
 
-        public WalletService(DbContext db, ICurrentUserAccessor userAccessor)
+        public WalletService(IDatabase db, ICurrentUserAccessor userAccessor)
         {
             _db = db;
             _userAccessor = userAccessor;
@@ -23,7 +23,7 @@ namespace BetingSystem.Services
         public async Task SubtractMoney(decimal moneyAmmount, WalletTransaction.WalletTransactionType type)
         {
             var userId = _userAccessor.Id();
-            var wallet = await _db.Set<UserWallet>().FirstOrDefaultAsync(w => w.UserId == userId);
+            var wallet = await _db.GenericQuery<UserWallet>().FirstOrDefaultAsync(w => w.UserId == userId);
 
             if (wallet == null)
                 throw new ModelNotFound(typeof(UserWallet));
@@ -41,9 +41,7 @@ namespace BetingSystem.Services
         private Task CommitTransaction(UserWallet wallet, WalletTransaction transaction)
         {
             wallet.MoneyAmmount += transaction.MoneyInvolved;
-            _db.Add(transaction);
-            _db.Update(wallet);
-            return _db.SaveChangesAsync();
+            return _db.NewTransaction().Insert(transaction).Update(wallet).Commit();
         }
     }
 }

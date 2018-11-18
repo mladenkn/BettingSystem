@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ApplicationKernel;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Utilities;
@@ -14,14 +15,12 @@ namespace BetingSystem.Services
     public class BonusService : IBonusService
     {
         private readonly IBonusApplier _bonusApplier;
-        private readonly DbContext _db;
-        private readonly ITicketBonusesRepository _bonuses;
+        private readonly IDatabase _db;
 
-        public BonusService(IBonusApplier bonusApplier, DbContext db, ITicketBonusesRepository bonuses)
+        public BonusService(IBonusApplier bonusApplier, IDatabase db)
         {
             _bonusApplier = bonusApplier;
             _db = db;
-            _bonuses = bonuses;
         }
 
         public async Task ApplyBonuses(Ticket ticket)
@@ -31,7 +30,7 @@ namespace BetingSystem.Services
                 .Distinct()
                 .Count();
 
-            var bonuses = await _bonuses.AllActive();
+            var bonuses = await _db.DataProvider.GetActiveBonuses();
 
             var appliedBonuses = await _bonusApplier
                 .Use(ticket)
@@ -40,14 +39,16 @@ namespace BetingSystem.Services
                 .VerifyForBonus<VariousSportsBonus>(b => numberOfSportsOnTicket >= b.RequiredNumberOfDifferentSports)
                 .VerifyForBonus<AllSportsBonus>(async b =>
                 {
-                    var numberOfSports = await _db.Set<Sport>().CountAsync();
+                    var numberOfSports = await _db.GenericQuery<Sport>().CountAsync();
                     return numberOfSportsOnTicket >= numberOfSports;
                 })
                 .Apply();
 
-            appliedBonuses.ForEach(b => _db.Add(b));
-            _db.Update(ticket);
-            await _db.SaveChangesAsync();
+            await _db
+                .NewTransaction()
+                .InsertRange(appliedBonuses)
+                .Update(ticket)
+                .Commit();
         }
     }
 }

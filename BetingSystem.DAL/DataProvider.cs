@@ -12,11 +12,13 @@ namespace BetingSystem.DAL
     {
         private readonly BetingSystemDbContext _db;
         private readonly IConfigurationProvider _mapperConfig;
+        private readonly ITicketBonusesRepository _ticketBonuses;
 
-        public DataProvider(BetingSystemDbContext db, IConfigurationProvider mapperConfig)
+        public DataProvider(BetingSystemDbContext db, IConfigurationProvider mapperConfig, ITicketBonusesRepository ticketBonuses)
         {
             _db = db;
             _mapperConfig = mapperConfig;
+            _ticketBonuses = ticketBonuses;
         }
 
         public async Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId)
@@ -36,5 +38,7 @@ namespace BetingSystem.DAL
 
             return tickets;
         }
+
+        public Task<IEnumerable<ITicketBonus>> GetActiveBonuses() => _ticketBonuses.GetActiveBonuses();
     }
 }

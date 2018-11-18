@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApplicationKernel
@@ -15,5 +16,19 @@ namespace ApplicationKernel
         IDatabaseTransaction Update(object o);
         IDatabaseTransaction Delete(object o);
         Task Commit();
+    }
+
+    public static class DatabaseTransactionExtensions
+    {
+        public static IDatabaseTransaction InsertRange(this IDatabaseTransaction transaction, IEnumerable<object> data)
+        {
+            foreach (var o in data)
+                transaction.Insert(o);
+            return transaction;
+        }
+        public static IDatabaseTransaction InsertRange(this IDatabaseTransaction transaction, params object[] data)
+        {
+            return InsertRange(transaction, (IEnumerable<object>)data);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ApplicationKernel;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Utilities;
@@ -8,19 +9,21 @@ namespace BetingSystem.DevelopmentUtilities
 {
     public static class DbSeeder
     {
-        public static async Task Seed(DbContext db, ITicketBonusesRepository bonusesRepo)
+        public static async Task Seed(IDatabase db)
         {
             var user = new User {UserId = "mladen"};
             var wallet = new UserWallet {Currency = "HRK", MoneyAmmount = 500, UserId = user.UserId};
 
-            db.AddRange(user, wallet);
+            var transaction = db.NewTransaction();
+
+            transaction.InsertRange(user, wallet);
 
             var hajduk = NewFootballTeam("Hajduk");
             var dinamo = NewFootballTeam("Dinamo");
             var barca = NewFootballTeam("Barcelona");
             var arsenal = NewFootballTeam("Arsenal");
 
-            db.AddRange(hajduk, dinamo, barca, arsenal);
+            transaction.InsertRange(hajduk, dinamo, barca, arsenal);
 
             var hajdukVsDinamo = new BetablePair
             {
@@ -42,7 +45,7 @@ namespace BetingSystem.DevelopmentUtilities
                 DrawQuota = 2.4m
             };
 
-            db.AddRange(hajdukVsDinamo, barcaVsArsenal);
+            transaction.InsertRange(hajdukVsDinamo, barcaVsArsenal);
 
             var ticket = new Ticket
             {
@@ -66,9 +69,9 @@ namespace BetingSystem.DevelopmentUtilities
 
             ticket.Quota = ticket.BetedPairs.Select(p => p.GetQuota()).Product();
 
-            db.Add(ticket);
+            transaction.Insert(ticket);
 
-            await db.SaveChangesAsync();
+            await transaction.Commit();
         }
 
         public static Team NewFootballTeam(string name)

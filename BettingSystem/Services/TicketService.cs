@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationKernel;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using Microsoft.EntityFrameworkCore;
@@ -17,30 +18,27 @@ namespace BetingSystem.Services
     public class TicketService : ITicketService
     {
         private readonly IBonusService _bonusService;
-        private readonly DbContext _db;
+        private readonly IDatabase _db;
         private readonly IWalletService _walletService;
         private readonly ICurrentUserAccessor _currentUser;
-        private readonly IDataProvider _dataProvider;
 
         public TicketService(
             IBonusService bonusService, 
-            DbContext db,
+            IDatabase db,
             IWalletService walletService,
-            ICurrentUserAccessor currentUser,
-            IDataProvider dataProvider)
+            ICurrentUserAccessor currentUser)
         {
             _bonusService = bonusService;
             _db = db;
             _walletService = walletService;
             _currentUser = currentUser;
-            _dataProvider = dataProvider;
         }
 
         public async Task Handle(CommitTicketRequest request)
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
-            var betablePairs = await _db.Set<BetablePair>()
+            var betablePairs = await _db.GenericQuery<BetablePair>()
                 .Include(p => p.Team1)
                 .Include(p => p.Team2)
                 .Where(p => pairsToBetIds.Contains(p.Id))
@@ -63,8 +61,7 @@ namespace BetingSystem.Services
             };
 
             CalculateQuota(ticket);
-            _db.Add(ticket);
-            await _db.SaveChangesAsync();
+            await _db.NewTransaction().Insert(ticket).InsertRange(ticket.BetedPairs).Commit();
             await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             await _bonusService.ApplyBonuses(ticket);
         }
@@ -87,6 +84,6 @@ namespace BetingSystem.Services
             });
         }
 
-        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets() => _dataProvider.GetUsersTickets(_currentUser.Id());
+        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets() => _db.DataProvider.GetUsersTickets(_currentUser.Id());
     }
 }

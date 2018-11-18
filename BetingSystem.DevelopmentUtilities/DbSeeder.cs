@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ApplicationKernel;
 using BetingSystem.Models;
-using Microsoft.EntityFrameworkCore;
 using Utilities;
 
 namespace BetingSystem.DevelopmentUtilities

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ApplicationKernel;
-using BetingSystem.DAL;
 using BetingSystem.Models;
 using BetingSystem.Services;
 using FluentAssertions;

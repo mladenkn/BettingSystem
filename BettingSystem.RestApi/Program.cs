@@ -2,7 +2,6 @@
 using BetingSystem.DevelopmentUtilities;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetingSystem.RestApi

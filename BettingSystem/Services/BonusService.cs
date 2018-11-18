@@ -43,11 +43,7 @@ namespace BetingSystem.Services
                 })
                 .Apply();
 
-            await _db
-                .NewTransaction()
-                .InsertRange(appliedBonuses)
-                .Update(ticket)
-                .Commit();
+            await _db.NewTransaction().InsertRange(appliedBonuses).Update(ticket).Commit();
         }
     }
 }

@@ -7,11 +7,6 @@ using Newtonsoft.Json;
 
 namespace BetingSystem.DAL
 {
-    public interface ITicketBonusesRepository
-    {
-        Task<IEnumerable<ITicketBonus>> GetActiveBonuses();
-    }
-
     public class TicketBonusesRepository : ITicketBonusesRepository
     {
         private readonly IList<ITicketBonus> _bonuses;
@@ -29,6 +24,16 @@ namespace BetingSystem.DAL
         }
 
         public Task<IEnumerable<ITicketBonus>> GetActiveBonuses() => Task.FromResult(_bonuses.Where(b => b.IsActive));
+
+        public Task Insert(ITicketBonus bonus)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task Update(ITicketBonus bonus)
+        {
+            throw new System.NotImplementedException();
+        }
 
         private class TicketBonuses
         {

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BetingSystem.DTO;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 

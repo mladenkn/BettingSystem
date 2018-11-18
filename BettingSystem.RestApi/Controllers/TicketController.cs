@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BetingSystem.DTO;
+using BetingSystem.Models;
 using BetingSystem.Requests;
 using BetingSystem.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace BetingSystem.RestApi.Controllers
             catch (BetablePairsNotFound e)
             {
                 var message = $"Pairs with the ids: {e.NotFoundPairsIds} have not been found";
-                return BadRequest(message);
+                return NotFound(message);
             }
             catch (ModelNotFound e)
             {

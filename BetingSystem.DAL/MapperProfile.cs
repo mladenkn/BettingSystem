@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BetingSystem.DTO;
 using BetingSystem.Models;
 
 namespace BetingSystem.DAL

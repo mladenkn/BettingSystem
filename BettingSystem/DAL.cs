@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ApplicationKernel;
 using BetingSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using Utilities;
 
 namespace BetingSystem
 {
@@ -42,6 +45,7 @@ namespace BetingSystem
     public class DatabaseTransaction : ApplicationKernel.DatabaseTransaction
     {
         private readonly ITicketBonusesRepository _bonusesRepository;
+        private readonly ICollection<Func<Task>> _asyncModifiers = new List<Func<Task>>();
 
         public DatabaseTransaction(DbContext db, ITicketBonusesRepository bonusesRepository) : base(db)
         {
@@ -52,7 +56,7 @@ namespace BetingSystem
         {
             if (o is ITicketBonus b)
             {
-                _bonusesRepository.Insert(b);
+                _asyncModifiers.Add(() => _bonusesRepository.Insert(b));
                 return this;
             }
             else
@@ -63,11 +67,17 @@ namespace BetingSystem
         {
             if (o is ITicketBonus b)
             {
-                _bonusesRepository.Update(b);
+                _asyncModifiers.Add(() => _bonusesRepository.Update(b));
                 return this;
             }
             else
                 return base.Insert(o);
+        }
+
+        public override Task Commit()
+        {
+            var tasks = _asyncModifiers.Select(item => item()).WhenAll();
+            return Task.WhenAll(tasks, base.Commit());
         }
     }
 }

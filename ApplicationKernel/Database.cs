@@ -23,7 +23,7 @@ namespace ApplicationKernel
     public class DatabaseTransaction : IDatabaseTransaction
     {
         private readonly DbContext _db;
-        private readonly ICollection<Action<DbContext>> _modifiers = new List<Action<DbContext>>();
+        private readonly ICollection<Action> _modifiers = new List<Action>();
 
         public DatabaseTransaction(DbContext db)
         {
@@ -32,26 +32,26 @@ namespace ApplicationKernel
 
         public virtual IDatabaseTransaction Insert(object o)
         {
-            _modifiers.Add(db => db.Add(o));
+            _modifiers.Add(() => _db.Add(o));
             return this;
         }
 
         public virtual IDatabaseTransaction Update(object o)
         {
-            _modifiers.Add(db => db.Update(o));
+            _modifiers.Add(() => _db.Update(o));
             return this;
         }
 
         public virtual IDatabaseTransaction Delete(object o)
         {
-            _modifiers.Add(db => db.Remove(o));
+            _modifiers.Add(() => _db.Remove(o));
             return this;
         }
 
-        public async Task Commit()
+        public virtual async Task Commit()
         {
             foreach (var modifier in _modifiers)
-                modifier(_db);
+                modifier();
             await _db.SaveChangesAsync();
         }
     }

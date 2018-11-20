@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using ApplicationKernel;
 using BetingSystem.Models;
 using BetingSystem.Requests;
@@ -11,7 +12,7 @@ namespace BetingSystem.Services
 {
     public interface ITicketService
     {
-        Task Handle(CommitTicketRequest request);
+        Task<TicketDto> Handle(CommitTicketRequest request);
         Task<IReadOnlyCollection<TicketDto>> GetUsersTickets();
     }
 
@@ -21,20 +22,23 @@ namespace BetingSystem.Services
         private readonly IDatabase _db;
         private readonly IWalletService _walletService;
         private readonly ICurrentUserAccessor _currentUser;
+        private readonly IMapper _mapper;
 
         public TicketService(
             IBonusService bonusService, 
             IDatabase db,
             IWalletService walletService,
+            IMapper mapper,
             ICurrentUserAccessor currentUser)
         {
             _bonusService = bonusService;
             _db = db;
             _walletService = walletService;
             _currentUser = currentUser;
+            _mapper = mapper;
         }
 
-        public async Task Handle(CommitTicketRequest request)
+        public async Task<TicketDto> Handle(CommitTicketRequest request)
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
@@ -64,6 +68,8 @@ namespace BetingSystem.Services
             await _db.NewTransaction().Insert(ticket).InsertRange(ticket.BetedPairs).Commit();
             await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             await _bonusService.ApplyBonuses(ticket);
+
+            return _mapper.Map<TicketDto>(ticket);
         }
 
         public static void CalculateQuota(Ticket ticket)

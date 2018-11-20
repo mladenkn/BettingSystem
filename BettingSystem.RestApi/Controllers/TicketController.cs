@@ -21,7 +21,8 @@ namespace BetingSystem.RestApi.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> Post([FromBody] CommitTicketRequest request) => _safeRunner.Run(() => _ticketService.Handle(request), Ok);
+        public Task<IActionResult> Post([FromBody] CommitTicketRequest request) =>
+            _safeRunner.Run(() => _ticketService.Handle(request), ticket => Created("", ticket));
 
         [HttpGet]
         public Task<IActionResult> Get() => _safeRunner.Run(() => _ticketService.GetUsersTickets(), Ok);

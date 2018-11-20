@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BetingSystem.Models;
 
-namespace BetingSystem.DAL
+namespace BetingSystem
 {
     public class MapperProfile : Profile
     {

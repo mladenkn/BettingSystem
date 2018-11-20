@@ -67,9 +67,9 @@ namespace BetingSystem.Services
             };
 
             CalculateQuota(ticket);
+            await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             _db.Add(ticket);
             await _db.SaveChangesAsync();
-            await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             await _bonusService.ApplyBonuses(ticket);
 
             return _mapper.Map<TicketDto>(ticket);

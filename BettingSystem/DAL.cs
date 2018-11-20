@@ -76,7 +76,7 @@ namespace BetingSystem
 
         public override Task Commit()
         {
-            var tasks = _asyncModifiers.Select(item => item()).WhenAll();
+            var tasks = _asyncModifiers.Select(modifier => modifier()).WhenAll();
             return Task.WhenAll(tasks, base.Commit());
         }
     }

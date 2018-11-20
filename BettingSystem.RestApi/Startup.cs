@@ -31,7 +31,7 @@ namespace BetingSystem.RestApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services
-                .AddAutoMapper(typeof(MapperProfile).Assembly)
+                .AddAutoMapper(c => c.AddProfile<MapperProfile>())
                 .AddDbContext<BetingSystemDbContext>(c => c.UseInMemoryDatabase("test-db"))
                 .AddScoped<DbContext, BetingSystemDbContext>()
                 .AddTransient<IBonusService, BonusService>()

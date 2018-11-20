@@ -64,17 +64,12 @@ namespace BetingSystem.Services
                 UserId = _currentUser.Id()
             };
 
-            CalculateQuota(ticket);
+            ticket.RefreshQuota();
             await _db.NewTransaction().Insert(ticket).InsertRange(ticket.BetedPairs).Commit();
             await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
             await _bonusService.ApplyBonuses(ticket);
 
             return _mapper.Map<TicketDto>(ticket);
-        }
-
-        public static void CalculateQuota(Ticket ticket)
-        {
-            ticket.Quota = ticket.BetedPairs.Select(p => p.GetQuota()).Product();
         }
 
         private static IEnumerable<BetedPair> CreateBetedPairs(CommitTicketRequest request, IEnumerable<BetablePair> betablePairs)

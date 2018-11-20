@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using BetingSystem.Models;
+using Utilities;
 
 namespace BetingSystem
 {
@@ -17,6 +19,8 @@ namespace BetingSystem
         }
 
         public static decimal GetQuota(this BetedPair pair) => pair.BetablePair.GetQuotaForType(pair.BetedType);
+
+        public static void RefreshQuota(this Ticket ticket) => ticket.Quota = ticket.BetedPairs.Select(p => p.GetQuota()).Product();
 
         public static string GetName(this ITicketBonus bonus) => bonus.GetType().Name;
     }

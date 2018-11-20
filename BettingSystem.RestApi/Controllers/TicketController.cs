@@ -12,33 +12,18 @@ namespace BetingSystem.RestApi.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
+        private readonly ISafeRunner _safeRunner;
 
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, ISafeRunner safeRunner)
         {
             _ticketService = ticketService;
+            _safeRunner = safeRunner;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CommitTicketRequest request)
-        {
-            try
-            {
-                await _ticketService.Handle(request);
-            }
-            catch (BetablePairsNotFound e)
-            {
-                var message = $"Pairs with the ids: {e.NotFoundPairsIds} have not been found";
-                return NotFound(message);
-            }
-            catch (ModelNotFound e)
-            {
-                return NotFound(e.Message);
-            }
-
-            return Ok();
-        }
+        public Task<IActionResult> Post([FromBody] CommitTicketRequest request) => _safeRunner.Run(() => _ticketService.Handle(request), Ok);
 
         [HttpGet]
-        public Task<IReadOnlyCollection<TicketDto>> Get() => _ticketService.GetUsersTickets();
+        public Task<IActionResult> Get() => _safeRunner.Run(() => _ticketService.GetUsersTickets(), Ok);
     }
 }

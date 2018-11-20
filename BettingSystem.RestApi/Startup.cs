@@ -41,6 +41,7 @@ namespace BetingSystem.RestApi
                 .AddTransient<IDataProvider, DataProvider>()
                 .AddTransient<ICurrentUserAccessor, StubCurrentUserAccessor>()
                 .AddTransient<ITicketBonusesRepository, TicketBonusesRepository>()
+                .AddTransient<ISafeRunner, SafeRunner>()
                 .AddTransient(_ =>
                 {
                     var fileName = Configuration.GetValue<string>("TicketBonusesFile");

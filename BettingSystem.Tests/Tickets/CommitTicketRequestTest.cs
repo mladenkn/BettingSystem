@@ -72,26 +72,20 @@ namespace BetingSystem.Tests.Tickets
             var betedPairs = insertedData.OfType<BetedPair>().ToArray();
             betedPairs.Length.Should().Be(3);
 
-            void AssertOnPair(int betablePairId, Action<BetedPair> assert) =>
-                assert(betedPairs.Single(p => p.BetablePairId == betablePairId));
-
-            AssertOnPair(betablePair1.Id, pair =>
+            void AssertOnPair(int betablePairId, int quota, BetingType type)
             {
-                pair.GetQuota().Should().Be(pair1SelectedQuota);
-                pair.BetedType.Should().Be(BetingType.Team1Win);
-            });
+                var pair = betedPairs.Single(p => p.BetablePairId == betablePairId);
+                pair.GetQuota().Should().Be(quota);
+                pair.BetedType.Should().Be(type);
+            }
 
-            AssertOnPair(betablePair2.Id, pair =>
-            {
-                pair.GetQuota().Should().Be(pair2SelectedQuota);
-                pair.BetedType.Should().Be(BetingType.Team2Win);
-            });
+            AssertOnPair(betablePair1.Id, pair1SelectedQuota, BetingType.Team1Win);
+            AssertOnPair(betablePair2.Id, pair2SelectedQuota, BetingType.Team2Win);
+            AssertOnPair(betablePair3.Id, pair3SelectedQuota, BetingType.Draw);
 
-            AssertOnPair(betablePair3.Id, pair =>
-            {
-                pair.GetQuota().Should().Be(pair3SelectedQuota);
-                pair.BetedType.Should().Be(BetingType.Draw);
-            });
+            commitedTicket.Quota.Should().Be(pair1SelectedQuota * pair2SelectedQuota * pair3SelectedQuota);
+            commitedTicket.UserId.Should().Be(userId);
+            commitedTicket.Stake.Should().Be(request.Stake);
         }
     }
 }

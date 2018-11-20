@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BetingSystem.Models;
 using BetingSystem.Requests;
 using BetingSystem.Services;
@@ -56,7 +57,7 @@ namespace BetingSystem.Tests.Tickets
             db.SaveChanges();
 
             var currentUserAccessor = TestServicesFactory.CureCurrentUserAccessor(userId);
-            var service = new TicketService(Mock.Of<IBonusService>(), db, Mock.Of<IWalletService>(), currentUserAccessor, null);
+            var service = new TicketService(Mock.Of<IBonusService>(), db, Mock.Of<IWalletService>(), currentUserAccessor, null, Mock.Of<IMapper>());
             await service.Handle(request);
 
             var commitedTicket = db.Tickets.Single();

@@ -41,6 +41,19 @@ namespace BetingSystem.Services
 
         public async Task<TicketDto> Handle(CommitTicketRequest request)
         {
+            var ticket = await CreateTicket(request);
+
+            await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
+            _unitOfWork.Add(ticket);
+            _unitOfWork.AddRange(ticket.BetedPairs);
+            await _unitOfWork.SaveChanges();
+            await _bonusService.ApplyBonuses(ticket);
+
+            return _mapper.Map<TicketDto>(ticket);
+        }
+
+        public async Task<Ticket> CreateTicket(CommitTicketRequest request)
+        {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
             var betablePairs = await _dataProvider.BetablePairs(pairsToBetIds);
@@ -62,13 +75,8 @@ namespace BetingSystem.Services
             };
 
             CalculateQuota(ticket);
-            await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
-            _unitOfWork.Add(ticket);
-            _unitOfWork.AddRange(ticket.BetedPairs);
-            await _unitOfWork.SaveChanges();
-            await _bonusService.ApplyBonuses(ticket);
 
-            return _mapper.Map<TicketDto>(ticket);
+            return ticket;
         }
 
         public static void CalculateQuota(Ticket ticket)

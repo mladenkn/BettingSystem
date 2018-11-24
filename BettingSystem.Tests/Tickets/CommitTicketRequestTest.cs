@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -24,11 +25,10 @@ namespace BetingSystem.Tests.Tickets
             var pair2SelectedQuota = 6;
             var pair3SelectedQuota = 2;
 
-            var betablePair1 = data.BetablePair(pair1SelectedQuota, -1, -1, new Team(), new Team());
-            var betablePair2 = data.BetablePair(-1, pair2SelectedQuota, -1, new Team(), new Team());
-            var betablePair3 = data.BetablePair(-1, -1, pair3SelectedQuota, new Team(), new Team());
-
-            db.AddRange(betablePair1, betablePair2, betablePair3);
+            var betablePair1 = data.BetablePair(1, pair1SelectedQuota, -1, -1, new Team(), new Team());
+            var betablePair2 = data.BetablePair(2, -1, pair2SelectedQuota, -1, new Team(), new Team());
+            var betablePair3 = data.BetablePair(3, -1, -1, pair3SelectedQuota, new Team(), new Team());
+            IReadOnlyCollection<BetablePair> betablePairs = new[] {betablePair1, betablePair2, betablePair3};
             
             var request = new CommitTicketRequest
             {
@@ -55,10 +55,18 @@ namespace BetingSystem.Tests.Tickets
 
             var userId = "a";
 
-            db.SaveChanges();
-
             var currentUserAccessor = TestServicesFactory.CureCurrentUserAccessor(userId);
-            var service = new TicketService(Mock.Of<IBonusService>(), new UnitOfWork(db), Mock.Of<IWalletService>(), currentUserAccessor, new DataProvider(db, null, null), Mock.Of<IMapper>());
+
+            var dataProviderMock = new Mock<IDataProvider>();
+            dataProviderMock.Setup(dp => dp.BetablePairs(It.IsAny<IEnumerable<int>>())).Returns(Task.FromResult(betablePairs));
+
+            var service = new TicketService(
+                Mock.Of<IBonusService>(),
+                new UnitOfWork(db),
+                Mock.Of<IWalletService>(),
+                currentUserAccessor,
+                dataProviderMock.Object,
+                Mock.Of<IMapper>());
             await service.Handle(request);
 
             var commitedTicket = db.Tickets.Single();

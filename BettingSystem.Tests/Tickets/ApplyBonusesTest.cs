@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BetingSystem.DAL;
 using BetingSystem.Models;
 using BetingSystem.Services;
 using FluentAssertions;
@@ -17,7 +16,7 @@ namespace BetingSystem.Tests.Tickets
         public async Task Run()
         {
             var data = new DataFactory();
-            var db = TestServicesFactory.DbContext();
+            var unitOfWorkMock = new UnitOfWorkMock();
 
             var variousSportsBonus = new VariousSportsBonus {IncreasesQuotaBy = 4, RequiredNumberOfDifferentSports = 3, IsActive = true};
             IEnumerable<ITicketBonus> bonuses = new[] {variousSportsBonus };
@@ -29,14 +28,15 @@ namespace BetingSystem.Tests.Tickets
 
             var quotaWithoutBonus = 2;
             var ticket = new Ticket { Quota = quotaWithoutBonus, Id = 4, BetedPairs = betedPairs };
-            db.Add(ticket);
-            await db.SaveChangesAsync();
 
-            var bonusService = new BonusService(new BonusApplier(new UnitOfWork(db)), dataProvider.Object);
+            var bonusService = new BonusService(new BonusApplier(unitOfWorkMock.Object), dataProvider.Object);
 
             await bonusService.ApplyBonuses(ticket);
 
-            var appliedBonus = db.AppliedBonuses.Single();
+            var insertedObjects = unitOfWorkMock.Changes.Inserted;
+
+            insertedObjects.OfType<AppliedBonus>().Should().ContainSingle();
+            var appliedBonus = (AppliedBonus) insertedObjects.Single();
             appliedBonus.TicketId.Should().Be(ticket.Id);
             appliedBonus.BonusName.Should().Be(variousSportsBonus.GetName());
 

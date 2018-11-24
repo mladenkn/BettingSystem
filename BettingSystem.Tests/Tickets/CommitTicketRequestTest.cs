@@ -19,8 +19,8 @@ namespace BetingSystem.Tests.Tickets
         public async Task Run()
         {
             var data = new DataFactory();
-            var db = TestServicesFactory.DbContext();
-            
+            var unitOfWorkMock = new UnitOfWorkMock();
+
             var pair1SelectedQuota = 23;
             var pair2SelectedQuota = 6;
             var pair3SelectedQuota = 2;
@@ -62,17 +62,19 @@ namespace BetingSystem.Tests.Tickets
 
             var service = new TicketService(
                 Mock.Of<IBonusService>(),
-                new UnitOfWork(db),
+                unitOfWorkMock.Object,
                 Mock.Of<IWalletService>(),
                 currentUserAccessor,
                 dataProviderMock.Object,
                 Mock.Of<IMapper>());
             await service.Handle(request);
 
-            var commitedTicket = db.Tickets.Single();
-            commitedTicket.Should().NotBeNull();
+            var insertedObjects = unitOfWorkMock.Changes.Inserted;
 
-            var betedPairs = db.BetedPairs.ToArray();
+            insertedObjects.OfType<Ticket>().Should().ContainSingle();
+            var commitedTicket = insertedObjects.OfType<Ticket>().Single();
+            
+            var betedPairs = insertedObjects.OfType<BetedPair>().ToArray();
             betedPairs.Length.Should().Be(3);
 
             void AssertOnPair(int betablePairId, int quota, BetingType type)

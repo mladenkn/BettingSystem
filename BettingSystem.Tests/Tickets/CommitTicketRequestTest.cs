@@ -67,7 +67,10 @@ namespace BetingSystem.Tests.Tickets
                 currentUserAccessor,
                 dataProviderMock.Object,
                 Mock.Of<IMapper>());
+
             await service.Handle(request);
+
+            unitOfWorkMock.Changes.SavedChanges.Should().BeTrue();
 
             var insertedObjects = unitOfWorkMock.Changes.Inserted;
 

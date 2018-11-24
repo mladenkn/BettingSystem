@@ -33,6 +33,8 @@ namespace BetingSystem.Tests.Tickets
 
             await bonusService.ApplyBonuses(ticket);
 
+            unitOfWorkMock.Changes.SavedChanges.Should().BeTrue();
+
             var insertedObjects = unitOfWorkMock.Changes.Inserted;
 
             insertedObjects.OfType<AppliedBonus>().Should().ContainSingle();

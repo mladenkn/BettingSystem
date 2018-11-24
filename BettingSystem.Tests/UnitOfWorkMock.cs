@@ -17,12 +17,13 @@ namespace BetingSystem.Tests
 
             var unitOfWorkMock = new Mock<IUnitOfWork>();
 
+            Object = unitOfWorkMock.Object;
+            Changes = new UnitOfWorkChanges(inserted, updated, deleted);
+
             unitOfWorkMock.Setup(u => u.Add(It.IsAny<object>())).Callback<object>(o => inserted.Add(o));
             unitOfWorkMock.Setup(u => u.Update(It.IsAny<object>())).Callback<object>(o => updated.Add(o));
             unitOfWorkMock.Setup(u => u.Delete(It.IsAny<object>())).Callback<object>(o => deleted.Add(o));
-
-            Object = unitOfWorkMock.Object;
-            Changes = new UnitOfWorkChanges(inserted, updated, deleted);
+            unitOfWorkMock.Setup(u => u.SaveChanges()).Returns(Task.CompletedTask).Callback(() => Changes.SavedChanges = true);
         }
 
         public IUnitOfWork Object { get; }
@@ -38,9 +39,9 @@ namespace BetingSystem.Tests
             Deleted = deleted;
         }
 
-        public IReadOnlyCollection<object> Inserted { get; set; }
-        public IReadOnlyCollection<object> Updated { get; set; }
-        public IReadOnlyCollection<object> Deleted { get; set; }
+        public IReadOnlyCollection<object> Inserted { get; }
+        public IReadOnlyCollection<object> Updated { get; }
+        public IReadOnlyCollection<object> Deleted { get; }
         public bool SavedChanges { get; set; }
     }
 }

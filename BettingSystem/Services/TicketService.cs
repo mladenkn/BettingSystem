@@ -72,6 +72,7 @@ namespace BetingSystem.Services
             CalculateQuota(ticket);
             _unitOfWork.Add(ticket);
             _unitOfWork.AddRange(ticket.BetedPairs);
+            await _unitOfWork.SaveChanges();
 
             return ticket;
         }

@@ -8,7 +8,7 @@ namespace BetingSystem.DevelopmentUtilities
 {
     public static class DbSeeder
     {
-        public static async Task Seed(DbContext db, ITicketBonusesRepository bonusesRepo)
+        public static async Task Seed(DbContext db)
         {
             var user = new User {UserId = "mladen"};
             var wallet = new UserWallet {Currency = "HRK", MoneyAmmount = 500, UserId = user.UserId};

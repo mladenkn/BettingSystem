@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BetingSystem.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.Services
 {
@@ -14,12 +13,12 @@ namespace BetingSystem.Services
     public class BonusService : IBonusService
     {
         private readonly IBonusApplier _bonusApplier;
-        private readonly DbContext _db;
+        private readonly IDataProvider _dataProvider;
 
-        public BonusService(IBonusApplier bonusApplier, DbContext db)
+        public BonusService(IBonusApplier bonusApplier, IDataProvider dataProvider)
         {
             _bonusApplier = bonusApplier;
-            _db = db;
+            _dataProvider = dataProvider;
         }
 
         public async Task ApplyBonuses(Ticket ticket)
@@ -29,13 +28,16 @@ namespace BetingSystem.Services
                 .Distinct()
                 .Count();
 
+            var bonuses = await _dataProvider.AllActiveBonuses();
+
             await _bonusApplier
                 .Use(ticket)
+                .Use(bonuses)
                 .ApplyAdditionalFor<IQuotaIncreasingBonus>((t, b) => t.Quota += b.IncreasesQuotaBy)
                 .VerifyForBonus<VariousSportsBonus>(b => numberOfSportsOnTicket >= b.RequiredNumberOfDifferentSports)
                 .VerifyForBonus<AllSportsBonus>(async b =>
                 {
-                    var numberOfSports = await _db.Set<Sport>().CountAsync();
+                    var numberOfSports = await _dataProvider.SportsCount();
                     return numberOfSportsOnTicket >= numberOfSports;
                 })
                 .Apply();

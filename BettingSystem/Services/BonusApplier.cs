@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BetingSystem.Models;
-using Microsoft.EntityFrameworkCore;
 using Utilities;
 
 namespace BetingSystem.Services
@@ -12,23 +11,29 @@ namespace BetingSystem.Services
         Task Apply();
         IBonusApplier ApplyAdditionalFor<TBonus>(Action<Ticket, TBonus> apply);
         IBonusApplier Use(Ticket ticket);
+        IBonusApplier Use(IEnumerable<ITicketBonus> bonuses);
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, bool> shouldGrant);
         IBonusApplier VerifyForBonus<TBonus>(Func<TBonus, Task<bool>> shouldApply);
     }
 
     public class BonusApplier : IBonusApplier
     {
-        private readonly DbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private Ticket _ticket;
         private readonly IDictionary<Type, Func<ITicketBonus, Task<bool>>> _verifyers =
             new Dictionary<Type, Func<ITicketBonus, Task<bool>>>();
         private readonly ICollection<Action<ITicketBonus>> _appliers = new List<Action<ITicketBonus>>();
-        private readonly ITicketBonusesRepository _bonusesRepo;
+        private IEnumerable<ITicketBonus> _bonuses;
 
-        public BonusApplier(ITicketBonusesRepository bonusesRepo, DbContext db)
+        public BonusApplier(IUnitOfWork unitOfWork)
         {
-            _bonusesRepo = bonusesRepo;
-            _db = db;
+            _unitOfWork = unitOfWork;
+        }
+
+        public IBonusApplier Use(IEnumerable<ITicketBonus> bonuses)
+        {
+            _bonuses = bonuses;
+            return this;
         }
 
         public IBonusApplier Use(Ticket ticket)
@@ -60,17 +65,15 @@ namespace BetingSystem.Services
 
         public async Task Apply()
         {
-            var activeBonuses = await _bonusesRepo.AllActive();
-
-            foreach (var bonus in activeBonuses)
+            foreach (var bonus in _bonuses)
             {
                 var shouldGrant = _verifyers[bonus.GetType()];
                 if (await shouldGrant(bonus))
                 {
-                    _db.Add(new AppliedBonus { BonusName = bonus.GetName(), TicketId = _ticket.Id });
+                    _unitOfWork.Add(new AppliedBonus { BonusName = bonus.GetName(), TicketId = _ticket.Id });
                     _appliers.ForEach(a => a(bonus));
-                    _db.Update(_ticket);
-                    await _db.SaveChangesAsync();
+                    _unitOfWork.Update(_ticket);
+                    await _unitOfWork.SaveChanges();
                 }
             }
         }

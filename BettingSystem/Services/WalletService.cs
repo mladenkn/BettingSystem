@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using BetingSystem.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BetingSystem.Services
 {
@@ -11,19 +10,21 @@ namespace BetingSystem.Services
 
     public class WalletService : IWalletService
     {
-        private readonly DbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserAccessor _userAccessor;
+        private readonly IDataProvider _dataProvider;
 
-        public WalletService(DbContext db, ICurrentUserAccessor userAccessor)
+        public WalletService(IUnitOfWork unitOfWork, ICurrentUserAccessor userAccessor, IDataProvider dataProvider)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
             _userAccessor = userAccessor;
+            _dataProvider = dataProvider;
         }
 
         public async Task SubtractMoney(decimal moneyAmmount, WalletTransaction.WalletTransactionType type)
         {
             var userId = _userAccessor.Id();
-            var wallet = await _db.Set<UserWallet>().FirstOrDefaultAsync(w => w.UserId == userId);
+            var wallet = await _dataProvider.UsersWallet(userId);
 
             if (wallet == null)
                 throw new ModelNotFound(typeof(UserWallet));
@@ -41,9 +42,9 @@ namespace BetingSystem.Services
         private Task CommitTransaction(UserWallet wallet, WalletTransaction transaction)
         {
             wallet.MoneyAmmount += transaction.MoneyInvolved;
-            _db.Add(transaction);
-            _db.Update(wallet);
-            return _db.SaveChangesAsync();
+            _unitOfWork.Add(transaction);
+            _unitOfWork.Update(wallet);
+            return _unitOfWork.SaveChanges();
         }
     }
 }

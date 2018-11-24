@@ -6,11 +6,10 @@ namespace BetingSystem
 {
     public interface IDataProvider
     {
-        Task<IReadOnlyCollection<TicketDto>> GetUsersTickets(string userId);
-    }
-
-    public interface ITicketBonusesRepository
-    {
-        Task<IEnumerable<ITicketBonus>> AllActive();
+        Task<IReadOnlyCollection<TicketDto>> UsersTickets(string userId);
+        Task<int> SportsCount();
+        Task<IEnumerable<ITicketBonus>> AllActiveBonuses();
+        Task<UserWallet> UsersWallet(string userId);
+        Task<IReadOnlyCollection<BetablePair>> BetablePairs(IEnumerable<int> ids);
     }
 }

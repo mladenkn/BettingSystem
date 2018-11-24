@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BetingSystem.Models;
 using BetingSystem.Requests;
-using Microsoft.EntityFrameworkCore;
 using Utilities;
 
 namespace BetingSystem.Services
@@ -18,7 +17,7 @@ namespace BetingSystem.Services
     public class TicketService : ITicketService
     {
         private readonly IBonusService _bonusService;
-        private readonly DbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWalletService _walletService;
         private readonly ICurrentUserAccessor _currentUser;
         private readonly IDataProvider _dataProvider;
@@ -26,14 +25,14 @@ namespace BetingSystem.Services
 
         public TicketService(
             IBonusService bonusService, 
-            DbContext db,
+            IUnitOfWork unitOfWork,
             IWalletService walletService,
             ICurrentUserAccessor currentUser,
             IDataProvider dataProvider,
             IMapper mapper)
         {
             _bonusService = bonusService;
-            _db = db;
+            _unitOfWork = unitOfWork;
             _walletService = walletService;
             _currentUser = currentUser;
             _dataProvider = dataProvider;
@@ -44,13 +43,9 @@ namespace BetingSystem.Services
         {
             var pairsToBetIds = request.BetingPairs.Select(p => p.BetedPairId);
 
-            var betablePairs = await _db.Set<BetablePair>()
-                .Include(p => p.Team1)
-                .Include(p => p.Team2)
-                .Where(p => pairsToBetIds.Contains(p.Id))
-                .ToArrayAsync();
+            var betablePairs = await _dataProvider.BetablePairs(pairsToBetIds);
 
-            if (request.BetingPairs.Count != betablePairs.Length)
+            if (request.BetingPairs.Count != betablePairs.Count)
             {
                 var betablePairsIds = betablePairs.Select(p => p.Id);
                 var difference = pairsToBetIds.Except(betablePairsIds);
@@ -68,8 +63,8 @@ namespace BetingSystem.Services
 
             CalculateQuota(ticket);
             await _walletService.SubtractMoney(ticket.Stake, WalletTransaction.WalletTransactionType.TicketCommit);
-            _db.Add(ticket);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Add(ticket);
+            await _unitOfWork.SaveChanges();
             await _bonusService.ApplyBonuses(ticket);
 
             return _mapper.Map<TicketDto>(ticket);
@@ -93,6 +88,6 @@ namespace BetingSystem.Services
             });
         }
 
-        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets() => _dataProvider.GetUsersTickets(_currentUser.Id());
+        public Task<IReadOnlyCollection<TicketDto>> GetUsersTickets() => _dataProvider.UsersTickets(_currentUser.Id());
     }
 }

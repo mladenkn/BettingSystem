@@ -24,7 +24,6 @@ namespace BetingSystem.DevelopmentUtilities
 
             var hajdukVsDinamo = new BetablePair
             {
-                Id = 1,
                 Team1 = hajduk,
                 Team2 = dinamo,
                 Team1WinQuota = 2,
@@ -34,7 +33,6 @@ namespace BetingSystem.DevelopmentUtilities
 
             var barcaVsArsenal = new BetablePair
             {
-                Id = 2,
                 Team1 = barca,
                 Team2 = arsenal,
                 Team1WinQuota = 2,

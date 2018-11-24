@@ -39,6 +39,7 @@ namespace BetingSystem.RestApi
                 .AddTransient<IBonusApplier, BonusApplier>()
                 .AddTransient<IWalletService, WalletService>()
                 .AddTransient<IDataProvider, DataProvider>()
+                .AddTransient<IUnitOfWork, UnitOfWork>()
                 .AddTransient<ICurrentUserAccessor, StubCurrentUserAccessor>()
                 .AddTransient<ITicketBonusesRepository, TicketBonusesRepository>()
                 .AddTransient<ISafeRunner, SafeRunner>()

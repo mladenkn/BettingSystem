@@ -24,7 +24,6 @@ namespace BetingSystem.DAL
         public async Task<IReadOnlyCollection<TicketDto>> UsersTickets(string userId)
         {
             // Should maybe write SQL here, or keep data in document store DB
-            // Should use query specification pattern
 
             var tickets = await _db.Set<Ticket>()
                 .Where(t => t.UserId == userId)
@@ -48,7 +47,8 @@ namespace BetingSystem.DAL
 
         public async Task<IReadOnlyCollection<BetablePair>> BetablePairs(IEnumerable<int> ids)
         {
-            // TODO: use query specs pattern
+            // TODO: use query specification pattern
+
             return await _db.Set<BetablePair>()
                 .Include(p => p.Team1)
                 .Include(p => p.Team2)

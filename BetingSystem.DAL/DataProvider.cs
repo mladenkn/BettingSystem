@@ -23,7 +23,8 @@ namespace BetingSystem.DAL
 
         public async Task<IReadOnlyCollection<TicketDto>> UsersTickets(string userId)
         {
-            // Should maybe write SQL here, or keep tickets in document store DB
+            // Should maybe write SQL here, or keep data in document store DB
+            // Should use query specification pattern
 
             var tickets = await _db.Set<Ticket>()
                 .Where(t => t.UserId == userId)
